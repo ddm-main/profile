@@ -4,12 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
+    "dev": "vite --open /dev.html",
+    "build": "vite build && node scripts/publish-root.mjs",
+    "lint": "oxlint src",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "framer-motion": "^13.2.0",
     "lucide-react": "^1.40.0",
     "react": "^19.2.8",
@@ -21,6 +25,7 @@
     "@vitejs/plugin-react": "^6.1.0",
     "autoprefixer": "^10.5.4",
     "oxlint": "^1.79.0",
+    "playwright": "^1.62.1",
     "postcss": "^8.5.27",
     "tailwindcss": "^3.4.19",
     "vite": "^8.2.2"

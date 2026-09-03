@@ -1,37 +1,66 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { experience } from "../data";
+import SectionHead from "./SectionHead";
 import Reveal from "./Reveal";
 
 export default function Experience() {
-  return (
-    <section id="experience" className="px-[6vw] pb-24">
-      <Reveal>
-        <span className="text-accent font-mono text-xs tracking-widest block mb-2.5">// EXPERIENCE</span>
-        <h2 className="font-display font-semibold text-[clamp(1.6rem,3.4vw,2.4rem)] mb-12">
-          Where I've worked.
-        </h2>
-      </Reveal>
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.75", "end 0.65"] });
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-      <div className="relative max-w-[820px]">
-        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-line" />
-        <div className="flex flex-col gap-12">
+  return (
+    <section id="experience" className="gutter py-24 sm:py-32 md:py-36">
+      <SectionHead
+        eyebrow="Career"
+        title="Execution road map"
+        sub="Nine years moving from hands-on infrastructure to owning identity and data security for a global engineering organisation."
+      />
+
+      <div ref={ref} className="relative mt-16 pl-8 sm:pl-12">
+        {/* rail */}
+        <div className="absolute left-[3px] sm:left-[7px] top-2 bottom-2 w-px bg-line" />
+        <motion.div
+          style={{ scaleY: lineScale }}
+          className="absolute left-[3px] sm:left-[7px] top-2 bottom-2 w-px origin-top bg-accent"
+        />
+
+        <div className="space-y-14 sm:space-y-16">
           {experience.map((e, i) => (
-            <Reveal key={e.org} delay={i * 0.12} className="relative pl-9">
-              <span className="absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full bg-bg border-2 border-accent flex items-center justify-center">
-                <motion.span
-                  className="w-1.5 h-1.5 rounded-full bg-accent"
-                  animate={{ scale: [1, 1.4, 1] }}
-                  transition={{ repeat: Infinity, duration: 2, delay: i * 0.3 }}
-                />
-              </span>
-              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
-                <h3 className="font-display font-semibold text-lg text-text">{e.role}</h3>
-                <span className="font-mono text-[11px] text-accent border border-accent-dim px-2 py-0.5 rounded-sm">
-                  {e.period}
-                </span>
+            <Reveal key={e.n} delay={i * 0.1}>
+              <div className="relative">
+                <span className="absolute -left-8 sm:-left-12 top-2 grid h-[9px] w-[9px] place-items-center rounded-full bg-accent ring-4 ring-paper" />
+
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] tracking-[0.18em] uppercase text-muted">
+                  <span className="text-accent">{e.n}</span>
+                  <span className="h-px w-5 bg-line" />
+                  <span>{e.period}</span>
+                  <span className="h-1 w-1 rounded-full bg-line" />
+                  <span>{e.location}</span>
+                </div>
+
+                <h3 className="mt-3 font-display font-semibold tracking-tight text-[clamp(1.35rem,3.4vw,2rem)] leading-tight">
+                  {e.role}
+                </h3>
+                <div className="mt-1.5 font-serif italic text-lg sm:text-xl text-accent">
+                  {e.org}
+                </div>
+
+                <p className="mt-4 max-w-[60ch] text-[14.5px] sm:text-[15.5px] leading-[1.78] text-muted">
+                  {e.desc}
+                </p>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {e.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-line px-3 py-1 font-mono text-[10.5px] tracking-wide text-ink2"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="font-mono text-[12px] text-muted mb-2.5">{e.org}</div>
-              <p className="text-muted text-[14.5px] leading-[1.75] max-w-[62ch]">{e.desc}</p>
             </Reveal>
           ))}
         </div>

@@ -1,79 +1,132 @@
 import { useRef } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import Reveal from "./Reveal";
-
-function TiltCard() {
-  const ref = useRef(null);
-  const x = useMotionValue(0.5);
-  const y = useMotionValue(0.5);
-  const rotateX = useTransform(y, [0, 1], [10, -10]);
-  const rotateY = useTransform(x, [0, 1], [-10, 10]);
-
-  const handleMove = (e) => {
-    const rect = ref.current.getBoundingClientRect();
-    x.set((e.clientX - rect.left) / rect.width);
-    y.set((e.clientY - rect.top) / rect.height);
-  };
-  const reset = () => { x.set(0.5); y.set(0.5); };
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMove}
-      onMouseLeave={reset}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d", transformPerspective: 800 }}
-      className="border border-line bg-panel rounded-sm overflow-hidden max-w-[240px]"
-      data-cursor
-    >
-      <div className="aspect-[4/5] bg-gradient-to-br from-panel2 to-[#0d0f13] flex items-center justify-center font-mono text-xs text-line border-b border-line">
-        PHOTO
-      </div>
-      <div className="p-4">
-        <div className="flex items-center gap-2 text-[12px] text-ok mb-1.5 font-mono">
-          <span className="w-1.5 h-1.5 rounded-full bg-ok" />
-          ACCESS: VERIFIED
-        </div>
-        <div className="text-muted text-[12px] font-mono">PUNE, INDIA</div>
-      </div>
-    </motion.div>
-  );
-}
+import { motion, useScroll, useTransform } from "framer-motion";
+import { profile, principles } from "../data";
+import Reveal, { RevealWords } from "./Reveal";
+import portrait from "../assets/deepak-portrait.webp";
 
 export default function About() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const badgeRotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
+
   return (
-    <section id="about" className="pt-28 pb-24 px-[6vw]">
-      <div className="grid md:grid-cols-[280px_1fr] gap-16 items-start">
-        <Reveal>
-          <TiltCard />
+    <section id="about" ref={ref} className="relative gutter py-24 sm:py-32 md:py-40">
+      <div className="grid gap-12 md:gap-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20 items-start">
+        {/* Portrait card */}
+        <Reveal y={40} className="relative mx-auto w-full max-w-sm lg:max-w-none lg:sticky lg:top-28">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-line bg-paper2">
+            <motion.img
+              src={portrait}
+              alt={`${profile.name}, ${profile.role}`}
+              style={{ y: imgY }}
+              className="h-full w-full scale-110 object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-5">
+              <div className="flex items-center gap-2.5 rounded-full bg-paper/90 backdrop-blur px-4 py-2.5 w-fit">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/70" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink">
+                  Open to opportunities
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* rotating stamp */}
+          <motion.div
+            style={{ rotate: badgeRotate }}
+            className="absolute -top-6 -right-4 hidden sm:grid h-24 w-24 place-items-center rounded-full bg-ink text-paper"
+          >
+            <div className="text-center leading-tight">
+              <div className="font-display font-bold text-xl">9+</div>
+              <div className="font-mono text-[8px] tracking-[0.16em] uppercase text-paper/60">
+                Years
+              </div>
+            </div>
+          </motion.div>
         </Reveal>
+
+        {/* Copy */}
         <div>
-          <Reveal>
-            <span className="text-accent font-mono text-xs tracking-widest block mb-2.5">// ABOUT</span>
-            <h2 className="font-display font-semibold text-[clamp(1.6rem,3.4vw,2.4rem)] max-w-[20ch] mb-6">
-              A gatekeeper by trade, a builder by habit.
-            </h2>
+          <Reveal y={14}>
+            <div className="inline-flex items-center gap-2.5 font-mono text-[10px] sm:text-[11px] tracking-[0.22em] uppercase text-accent">
+              <span className="h-px w-7 bg-accent/50" />
+              About
+            </div>
           </Reveal>
-          <Reveal delay={0.1}>
-            <p className="text-muted text-[15.5px] leading-[1.85] max-w-[62ch] mb-4">
-              I manage <strong className="text-text font-medium">Identity and Access Management and Data Security</strong> at
-              RealThingks GmbH — governing who gets into what, hardening the perimeter, and
-              keeping compliance frameworks like TISAX satisfied. Before that, five years as a
-              Cloud Engineer building Azure and AWS environments for fintech and global banking clients.
+
+          <h2 className="mt-5 font-display font-semibold tracking-tightest leading-[0.98] text-[clamp(2.1rem,6vw,4.25rem)]">
+            <RevealWords text="Hello, I'm" />
+            <br />
+            <span className="font-serif italic font-normal tracking-tight text-accent">
+              <RevealWords text={profile.name} delay={0.1} />
+            </span>
+          </h2>
+
+          <Reveal delay={0.15}>
+            <p className="mt-7 text-[15px] sm:text-[17px] leading-[1.75] text-ink2 max-w-[62ch]">
+              {profile.intro}
             </p>
           </Reveal>
-          <Reveal delay={0.2}>
-            <p className="text-muted text-[15.5px] leading-[1.85] max-w-[62ch] mb-4">
-              I also describe myself as a <strong className="text-text font-medium">vibe-coder</strong> — I ship and maintain real
-              applications by directing AI tools rather than writing every line by hand, and I
-              treat that workflow itself as something worth engineering well.
+
+          <Reveal delay={0.22}>
+            <p className="mt-5 text-[14.5px] sm:text-base leading-[1.8] text-muted max-w-[62ch]">
+              Before {profile.company} I spent five years as a Cloud Engineer at FinIQ
+              Consulting, running Azure and AWS environments for fintech and global banking
+              clients — the kind of regulated work where an access mistake is not a small
+              mistake. That background is why I approach security as an operating discipline
+              rather than a checklist.
             </p>
           </Reveal>
-          <Reveal delay={0.3} className="flex flex-wrap gap-2.5 mt-6">
-            {["IAM & Governance", "Cloud Security", "AI-Assisted Automation"].map((t) => (
-              <span key={t} className="border border-line px-4 py-2 rounded-sm text-[12px] text-muted">
-                {t}
-              </span>
+
+          {/* Principles */}
+          <div className="mt-10 space-y-px overflow-hidden rounded-2xl border border-line">
+            {principles.map((p, i) => (
+              <Reveal key={p.k} delay={0.28 + i * 0.08}>
+                <div className="group bg-paper2/50 hover:bg-paper2 transition-colors duration-400 px-5 sm:px-6 py-5">
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-mono text-[10px] text-accent shrink-0">
+                      0{i + 1}
+                    </span>
+                    <div>
+                      <h3 className="font-display font-semibold text-[15px] sm:text-base tracking-tight text-ink">
+                        {p.k}
+                      </h3>
+                      <p className="mt-1.5 text-[13.5px] leading-[1.7] text-muted">{p.v}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
             ))}
+          </div>
+
+          <Reveal delay={0.4}>
+            <div className="mt-9 flex flex-wrap gap-x-8 gap-y-4 font-mono text-[10.5px] tracking-[0.16em] uppercase">
+              <div>
+                <div className="text-faint">Based in</div>
+                <div className="mt-1 text-ink normal-case tracking-normal font-body text-sm">
+                  {profile.location}
+                </div>
+              </div>
+              <div>
+                <div className="text-faint">Currently</div>
+                <div className="mt-1 text-ink normal-case tracking-normal font-body text-sm">
+                  {profile.company}
+                </div>
+              </div>
+              <div>
+                <div className="text-faint">Focus</div>
+                <div className="mt-1 text-ink normal-case tracking-normal font-body text-sm">
+                  IAM · Data Security
+                </div>
+              </div>
+            </div>
           </Reveal>
         </div>
       </div>

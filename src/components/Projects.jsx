@@ -1,74 +1,72 @@
-import { useRef } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 import { projects } from "../data";
+import SectionHead from "./SectionHead";
 import Reveal from "./Reveal";
-
-function ProjectCard({ p, i }) {
-  const ref = useRef(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const glow = useTransform(
-    [mx, my],
-    ([x, y]) => `radial-gradient(240px circle at ${x}px ${y}px, rgba(232,163,61,0.10), transparent 70%)`
-  );
-
-  const handleMove = (e) => {
-    const rect = ref.current.getBoundingClientRect();
-    mx.set(e.clientX - rect.left);
-    my.set(e.clientY - rect.top);
-  };
-
-  return (
-    <Reveal delay={i * 0.12} y={30}>
-      <motion.div
-        ref={ref}
-        onMouseMove={handleMove}
-        data-cursor
-        whileHover={{ y: -6 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="relative border border-line bg-panel rounded-sm p-7 flex flex-col min-h-[340px] overflow-hidden group"
-      >
-        <motion.div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: glow }} />
-        <div className="relative flex justify-between items-start mb-6">
-          <span className="font-mono text-[12px] text-muted">// PROJECT {p.index}</span>
-          <span className="font-mono text-[11px] text-accent border border-accent-dim px-2.5 py-1 rounded-sm">
-            {p.category}
-          </span>
-        </div>
-        <div className="relative flex items-center gap-2 mb-3">
-          <h3 className="font-display font-semibold text-xl">{p.title}</h3>
-          <ArrowUpRight
-            size={16}
-            className="text-accent opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-300"
-          />
-        </div>
-        <p className="relative text-muted text-[14px] leading-[1.7] flex-1">{p.desc}</p>
-        <div className="relative flex flex-wrap gap-1.5 mt-5">
-          {p.stack.map((s) => (
-            <span key={s} className="font-mono text-[11px] text-muted border border-line px-2.5 py-1 rounded-sm">
-              {s}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-    </Reveal>
-  );
-}
 
 export default function Projects() {
   return (
-    <section id="projects" className="px-[6vw] pb-28">
-      <Reveal>
-        <span className="text-accent font-mono text-xs tracking-widest block mb-2.5">// PORTFOLIO WORK</span>
-        <h2 className="font-display font-semibold text-[clamp(1.6rem,3.4vw,2.4rem)] mb-12">
-          Featured Engineering Projects
-        </h2>
-      </Reveal>
-      <div className="grid md:grid-cols-3 gap-5">
-        {projects.map((p, i) => (
-          <ProjectCard key={p.title} p={p} i={i} />
-        ))}
+    <section id="projects" className="relative bg-ink text-paper py-24 sm:py-32 md:py-36 grain">
+      <div className="gutter">
+        <SectionHead
+          dark
+          eyebrow="Selected work"
+          title="Things I built for myself"
+          sub="Not client work — tools I built because the manual version was wasting my time. Each one runs in my own workflow today."
+        />
+
+        <div className="mt-14 space-y-px overflow-hidden rounded-2xl border border-paper/10">
+          {projects.map((p, i) => (
+            <Reveal key={p.n} delay={i * 0.08}>
+              <article className="group relative bg-paper/[0.035] hover:bg-paper/[0.075] transition-colors duration-500 p-6 sm:p-9 md:p-11">
+                {/* hover accent bar */}
+                <span className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-accent transition-transform duration-500 group-hover:scale-y-100" />
+
+                <div className="grid gap-6 md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-10 md:items-start">
+                  <div className="font-display font-bold text-[clamp(2rem,6vw,3.4rem)] leading-none tracking-supertight text-paper/15 transition-colors duration-500 group-hover:text-accent">
+                    {p.n}
+                  </div>
+
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] tracking-[0.18em] uppercase text-paper/45">
+                      <span className="rounded-full border border-paper/15 px-3 py-1">
+                        {p.category}
+                      </span>
+                      <span>{p.year}</span>
+                    </div>
+
+                    <h3 className="mt-4 font-display font-semibold tracking-tight text-[clamp(1.5rem,4.2vw,2.4rem)] leading-tight">
+                      {p.title}
+                    </h3>
+
+                    <p className="mt-4 max-w-[62ch] text-[14.5px] sm:text-[15.5px] leading-[1.78] text-paper/60">
+                      {p.desc}
+                    </p>
+
+                    <p className="mt-4 border-l-2 border-accent/70 pl-4 font-serif italic text-[15px] sm:text-base text-accent-soft">
+                      {p.highlight}
+                    </p>
+
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {p.stack.map((s) => (
+                        <span
+                          key={s}
+                          className="rounded-full bg-paper/[0.07] px-3 py-1.5 font-mono text-[10.5px] tracking-wide text-paper/70"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="hidden md:block pt-2">
+                    <span className="grid h-11 w-11 place-items-center rounded-full border border-paper/15 text-paper/40 transition-all duration-500 group-hover:border-accent group-hover:bg-accent group-hover:text-ink group-hover:rotate-45">
+                      ↗
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
