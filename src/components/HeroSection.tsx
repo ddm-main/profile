@@ -36,30 +36,61 @@ const navItems = [
 ];
 
 export const HeroSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const hasLeftHeroRef = useRef(false);
 
-  const togglePlay = () => {
+  // Play video on mount (initial page load / refresh)
+  useEffect(() => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        videoRef.current.play();
-        setIsPlaying(true);
-      }
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  // Stop strictly at 9 seconds and hold
+  const handleTimeUpdate = () => {
+    if (videoRef.current && videoRef.current.currentTime >= 9) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 9;
     }
   };
 
-  useEffect(() => {
+  const handleEnded = () => {
     if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        // Autoplay may wait for user interaction
-      });
+      videoRef.current.pause();
     }
+  };
+
+  // Restart video ONLY when user leaves the hero section and returns to it
+  useEffect(() => {
+    const heroEl = sectionRef.current;
+    if (!heroEl) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            // User scrolled away / left the hero section
+            hasLeftHeroRef.current = true;
+          } else if (entry.isIntersecting && hasLeftHeroRef.current) {
+            // User came back to the hero section after leaving
+            hasLeftHeroRef.current = false;
+            if (videoRef.current) {
+              videoRef.current.currentTime = 0;
+              videoRef.current.play().catch(() => {});
+            }
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(heroEl);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -82,7 +113,10 @@ export const HeroSection: React.FC = () => {
   }, [mobileMenuOpen]);
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default lg:cursor-none">
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-screen overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default lg:cursor-none"
+    >
       {/* ================= 1. MINIMAL CUSTOM CURSOR (DESKTOP ONLY) ================= */}
       {cursorPos.x >= 0 && (
         <motion.div
@@ -114,19 +148,14 @@ export const HeroSection: React.FC = () => {
           <video
             ref={videoRef}
             autoPlay
-            loop
             muted
             playsInline
             preload="auto"
-            poster="/deepak-executive.jpg"
-            className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.8] sm:brightness-[0.9] lg:brightness-[0.98] contrast-[1.04]"
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={handleEnded}
+            className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.85] sm:brightness-[0.92] lg:brightness-[1] contrast-[1.04]"
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
-            <img
-              src="/deepak-executive.jpg"
-              alt="Deepak Dongare - IT Manager"
-              className="h-full w-full object-cover object-[center_10%]"
-            />
           </video>
 
           {/* Seamless Soft Left Edge Blend */}
@@ -145,22 +174,9 @@ export const HeroSection: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/5 via-transparent to-[#D4AF37]/10 mix-blend-screen pointer-events-none" />
         </motion.div>
 
-        {/* ================= 3. ANIMATED WATERMARK EMBLEM & VIDEO CONTROLS ================= */}
-        <div className="hidden sm:flex absolute bottom-6 right-6 lg:bottom-10 lg:right-12 pointer-events-auto items-center space-x-4 z-20">
-          {/* Elegant Video Playback Control Pill */}
-          <div className="flex items-center bg-[#0E0C0A]/90 backdrop-blur-md border border-[#8C6D4F]/40 hover:border-[#D4AF37]/60 rounded-full px-3.5 py-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.8)] transition-all">
-            <button
-              onClick={togglePlay}
-              className="text-[11px] font-mono font-medium text-[#E8DFD8] hover:text-[#D4AF37] transition-colors flex items-center space-x-1.5 focus:outline-none"
-              title={isPlaying ? 'Pause background video' : 'Play background video'}
-              aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
-            >
-              <span className="text-xs">{isPlaying ? '⏸' : '▶'}</span>
-              <span className="tracking-wider">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
-            </button>
-          </div>
-
-          <div className="relative flex items-center justify-center pointer-events-none">
+        {/* ================= 3. ANIMATED WATERMARK EMBLEM (DESKTOP / TABLET) ================= */}
+        <div className="hidden sm:flex absolute bottom-6 right-6 lg:bottom-10 lg:right-12 pointer-events-none items-center justify-center z-10">
+          <div className="relative flex items-center justify-center">
             <div className="absolute w-36 h-36 bg-black/85 rounded-full blur-xl" />
 
             <motion.div
