@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# generated single-file preview (npm run build output, inlined)
+preview.html
