@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import watermarkImg from '../assets/dd-insignia.svg';
@@ -39,6 +39,28 @@ export const HeroSection: React.FC = () => {
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        videoRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay may wait for user interaction
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -76,28 +98,39 @@ export const HeroSection: React.FC = () => {
         />
       )}
 
-      {/* ================= 2. FIXED CINEMATIC WALKING VISUAL LAYER ================= */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-black flex items-center justify-end">
+      {/* ================= 2. CINEMATIC VIDEO HERO VISUAL LAYER ================= */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black flex items-center justify-end">
         <motion.div
           animate={{
             scale: [1, 1.015, 1],
-            y: [-3, 2, -3],
           }}
           transition={{
-            duration: 8,
+            duration: 10,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="relative h-screen w-full sm:w-[80vw] md:w-[60vw] lg:w-[48vw] xl:w-[42vw] 2xl:w-[38vw] flex items-center justify-end overflow-hidden"
+          className="relative h-screen w-full sm:w-[90vw] md:w-[75vw] lg:w-[62vw] xl:w-[58vw] 2xl:w-[54vw] flex items-center justify-end overflow-hidden"
         >
-          <img
-            src="/deepak-executive.jpg"
-            alt="Deepak Dongare - IT Manager"
-            className="h-full w-full object-cover object-[center_10%] sm:object-[center_12%] lg:object-[center_10%] brightness-[0.75] sm:brightness-[0.9] lg:brightness-[1.02] contrast-[1.03] saturate-[1.02]"
-          />
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/deepak-executive.jpg"
+            className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.8] sm:brightness-[0.9] lg:brightness-[0.98] contrast-[1.04]"
+          >
+            <source src="/videos/hero.mp4" type="video/mp4" />
+            <img
+              src="/deepak-executive.jpg"
+              alt="Deepak Dongare - IT Manager"
+              className="h-full w-full object-cover object-[center_10%]"
+            />
+          </video>
 
           {/* Seamless Soft Left Edge Blend */}
-          <div className="absolute inset-y-0 left-0 w-2/5 sm:w-1/2 bg-gradient-to-r from-black via-black/80 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-2/5 sm:w-1/2 bg-gradient-to-r from-black via-black/85 to-transparent pointer-events-none" />
 
           {/* Mobile Contrast Scrim (ensures text readability on phones) */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60 lg:hidden pointer-events-none" />
@@ -112,9 +145,22 @@ export const HeroSection: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/5 via-transparent to-[#D4AF37]/10 mix-blend-screen pointer-events-none" />
         </motion.div>
 
-        {/* ================= 3. ANIMATED WATERMARK EMBLEM (DESKTOP / TABLET) ================= */}
-        <div className="hidden sm:flex absolute bottom-6 right-6 lg:bottom-10 lg:right-12 pointer-events-none items-center justify-center z-10">
-          <div className="relative flex items-center justify-center">
+        {/* ================= 3. ANIMATED WATERMARK EMBLEM & VIDEO CONTROLS ================= */}
+        <div className="hidden sm:flex absolute bottom-6 right-6 lg:bottom-10 lg:right-12 pointer-events-auto items-center space-x-4 z-20">
+          {/* Elegant Video Playback Control Pill */}
+          <div className="flex items-center bg-[#0E0C0A]/90 backdrop-blur-md border border-[#8C6D4F]/40 hover:border-[#D4AF37]/60 rounded-full px-3.5 py-1.5 shadow-[0_4px_25px_rgba(0,0,0,0.8)] transition-all">
+            <button
+              onClick={togglePlay}
+              className="text-[11px] font-mono font-medium text-[#E8DFD8] hover:text-[#D4AF37] transition-colors flex items-center space-x-1.5 focus:outline-none"
+              title={isPlaying ? 'Pause background video' : 'Play background video'}
+              aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
+            >
+              <span className="text-xs">{isPlaying ? '⏸' : '▶'}</span>
+              <span className="tracking-wider">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+            </button>
+          </div>
+
+          <div className="relative flex items-center justify-center pointer-events-none">
             <div className="absolute w-36 h-36 bg-black/85 rounded-full blur-xl" />
 
             <motion.div
@@ -174,7 +220,7 @@ export const HeroSection: React.FC = () => {
           </nav>
 
           {/* Right Action & Mobile Toggle */}
-          <div className="flex items-center space-x-3 ml-auto md:ml-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 ml-auto md:ml-0">
             <a
               href="#contact"
               onMouseEnter={() => setIsHovered(true)}
