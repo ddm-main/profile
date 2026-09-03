@@ -1,0 +1,72 @@
+.section { position: relative; z-index: 1; @include gutter; @include section-pad; }
+
+.head { max-width: 44rem; margin-bottom: clamp(2.25rem, 4vw, 3.5rem); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: space(3);
+  @include label; color: $accent-2;
+  &::before { content: ""; width: 1.75rem; height: 1px; background: linear-gradient(90deg, $accent-2, transparent); }
+}
+
+.title { margin-top: space(4); font-size: clamp(1.9rem, 5vw, 3.25rem); }
+.sub { margin-top: space(4); color: $slate; font-size: 1rem; line-height: 1.75; max-width: 56ch; }
+
+.grid {
+  display: grid;
+  gap: clamp(0.75rem, 1.4vw, 1.125rem);
+  grid-template-columns: 1fr;
+  @include up(md) { grid-template-columns: repeat(2, 1fr); }
+}
+
+.card {
+  @include glass(0.55, 20px);
+  border-radius: $r-lg;
+  padding: clamp(1.25rem, 2.2vw, 1.75rem);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Coloured wash per group — the only place hue carries meaning. */
+.card::before {
+  content: "";
+  position: absolute;
+  top: -40%; right: -25%;
+  width: 60%; aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.indigo::before  { background: rgba($indigo, 0.5); }
+.violet::before  { background: rgba($violet, 0.45); }
+.cyan::before    { background: rgba($cyan, 0.45); }
+.emerald::before { background: rgba($emerald, 0.4); }
+
+.cardHead { display: flex; align-items: baseline; gap: space(3); position: relative; }
+
+.num {
+  font-family: $font-mono;
+  font-size: 0.68rem;
+  color: $accent;
+}
+
+.cardTitle { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.025em; }
+
+.pills { display: flex; flex-wrap: wrap; gap: space(2); margin-top: space(5); position: relative; }
+
+.pill {
+  padding: 0.4rem 0.8rem;
+  border-radius: $r-pill;
+  font-size: 0.8rem;
+  color: $ink-2;
+  background: rgba(#fff, 0.72);
+  border: 1px solid rgba($hairline, 0.85);
+  transition: transform 0.3s $ease-out-expo, border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba($accent, 0.55);
+    color: $accent;
+    background: rgba(#fff, 0.95);
+  }
+}

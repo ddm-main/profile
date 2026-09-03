@@ -1,0 +1,71 @@
+@use "sass:map";
+@use "tokens" as *;
+
+@mixin up($name) {
+  @media (min-width: map.get($bp, $name)) { @content; }
+}
+@mixin down($name) {
+  @media (max-width: calc(#{map.get($bp, $name)} - 1px)) { @content; }
+}
+
+@function space($k) { @return map.get($space, $k); }
+
+/// Frosted glass panel — the core surface of this design.
+@mixin glass($alpha: 0.6, $blur: 20px) {
+  background: rgba(255, 255, 255, $alpha);
+  backdrop-filter: blur($blur) saturate(1.6);
+  -webkit-backdrop-filter: blur($blur) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 1px 2px rgba(14, 18, 32, 0.04),
+    0 8px 24px -12px rgba(14, 18, 32, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/// A gradient hairline around a panel, drawn with a mask so it stays 1px.
+@mixin gradient-border($from: $accent, $to: $accent-3, $radius: $r-lg, $width: 1px) {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: $radius;
+    padding: $width;
+    background: linear-gradient(135deg, $from, $to);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/// Page gutter, consistent everywhere.
+@mixin gutter {
+  padding-inline: clamp(1.125rem, 5vw, 5.5rem);
+}
+
+@mixin section-pad {
+  padding-block: clamp(4rem, 9vw, 8rem);
+}
+
+/// Uppercase micro-label used for eyebrows and metadata.
+@mixin label {
+  font-family: $font-mono;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $slate-soft;
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $accent;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}

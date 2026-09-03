@@ -1,0 +1,27 @@
+.footer {
+  position: relative;
+  z-index: 1;
+  @include gutter;
+  padding-block: space(6);
+  padding-bottom: calc(#{space(6)} + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba($hairline, 0.9);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: space(4);
+  @include label;
+
+  @include up(sm) { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+.links { display: flex; align-items: center; gap: space(5); }
+
+.link {
+  padding-block: space(2);
+  color: $slate;
+  transition: color 0.3s ease;
+  @include focus-ring;
+  &:hover { color: $accent; }
+}

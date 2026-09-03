@@ -1,0 +1,72 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Three slow-drifting colour fields. This is what the glass panels refract. */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+  opacity: 0.5;
+
+  @include up(md) { filter: blur(120px); }
+}
+
+.a {
+  width: 46vmax; height: 46vmax;
+  top: -12vmax; left: -10vmax;
+  background: radial-gradient(circle at 30% 30%, rgba($indigo, 0.55), transparent 68%);
+  animation: driftA 26s ease-in-out infinite;
+}
+.b {
+  width: 40vmax; height: 40vmax;
+  top: 22vmax; right: -14vmax;
+  background: radial-gradient(circle at 60% 40%, rgba($violet, 0.45), transparent 68%);
+  animation: driftB 32s ease-in-out infinite;
+}
+.c {
+  width: 36vmax; height: 36vmax;
+  bottom: -12vmax; left: 28vmax;
+  background: radial-gradient(circle at 50% 50%, rgba($cyan, 0.42), transparent 68%);
+  animation: driftC 29s ease-in-out infinite;
+}
+
+/* Fine grid, masked to the centre so it never meets an edge as a hard line. */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba($slate, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba($slate, 0.14) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 40%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 40%, #000 0%, transparent 72%);
+  opacity: 0.55;
+}
+
+/* Film grain, so the large flat gradients don't band. */
+.grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.32;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes driftA {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50%      { transform: translate3d(6vmax, 4vmax, 0) scale(1.12); }
+}
+@keyframes driftB {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50%      { transform: translate3d(-7vmax, 5vmax, 0) scale(0.9); }
+}
+@keyframes driftC {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50%      { transform: translate3d(5vmax, -6vmax, 0) scale(1.15); }
+}

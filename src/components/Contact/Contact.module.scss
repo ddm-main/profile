@@ -1,0 +1,151 @@
+.section { position: relative; z-index: 1; @include gutter; padding-block: clamp(4rem, 9vw, 8rem) space(6); }
+
+.grid {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: start;
+  @include up(lg) { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); }
+}
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: space(3);
+  @include label; color: $accent;
+  &::before { content: ""; width: 1.75rem; height: 1px; background: linear-gradient(90deg, $accent, transparent); }
+}
+
+.title {
+  margin-top: space(4);
+  font-size: clamp(2rem, 5.5vw, 3.75rem);
+
+  em {
+    font-style: normal;
+    background: linear-gradient(115deg, $accent, $accent-2 60%, $accent-3);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+}
+
+.sub { margin-top: space(5); max-width: 50ch; color: $slate; line-height: 1.78; }
+
+.links { margin-top: space(6); display: grid; gap: space(4); }
+
+.link {
+  display: flex; align-items: center; gap: space(4);
+  @include focus-ring;
+
+  small { @include label; display: block; }
+  strong { font-size: 0.98rem; font-weight: 500; word-break: break-all; }
+}
+
+.icon {
+  display: grid; place-items: center;
+  width: 2.75rem; height: 2.75rem;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid rgba($hairline, 0.95);
+  background: rgba(#fff, 0.6);
+  color: $slate;
+  transition: all 0.4s $ease-out-expo;
+}
+.link:hover .icon {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, $accent, $accent-2);
+  transform: translateY(-2px);
+}
+
+/* ------------------------------------------------------------------- form */
+.form {
+  @include glass(0.62, 24px);
+  border-radius: $r-xl;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  display: grid;
+  gap: space(4);
+}
+
+.field { display: grid; gap: space(2); }
+
+.label { @include label; }
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: $r-md;
+  border: 1px solid rgba($hairline, 0.95);
+  background: rgba(#fff, 0.85);
+  font-size: 0.95rem;
+  color: $ink;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+
+  &::placeholder { color: $slate-soft; }
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba($accent, 0.14);
+  }
+}
+
+.textarea { resize: vertical; min-height: 7rem; }
+
+.invalid { border-color: $rose; &:focus { box-shadow: 0 0 0 4px rgba($rose, 0.14); border-color: $rose; } }
+
+.error { font-size: 0.78rem; color: $rose; }
+
+.honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.submit {
+  margin-top: space(2);
+  padding: 0.95rem 1.25rem;
+  border-radius: $r-md;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, $accent, $accent-2);
+  box-shadow: 0 10px 26px -12px rgba($accent, 0.85);
+  transition: transform 0.3s $ease-out-expo, box-shadow 0.3s ease, opacity 0.3s ease;
+  @include focus-ring;
+
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 32px -12px rgba($accent, 0.95); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.status {
+  font-size: 0.85rem;
+  text-align: center;
+  padding-top: space(1);
+
+  &[data-tone="ok"]   { color: $emerald; }
+  &[data-tone="bad"]  { color: $rose; }
+  &[data-tone="idle"] { @include label; }
+}
+
+/* ------------------------------------------------------------- giant name */
+.bigName {
+  margin-top: clamp(3rem, 8vw, 7rem);
+  user-select: none;
+  pointer-events: none;
+}
+
+.bigLine {
+  display: block;
+  font-family: $font-display;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  font-size: clamp(2.75rem, 16vw, 14rem);
+  white-space: nowrap;
+}
+
+.bigFill {
+  background: linear-gradient(120deg, rgba($accent, 0.22), rgba($accent-2, 0.16));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+.bigStroke {
+  text-align: right;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba($slate, 0.3);
+}

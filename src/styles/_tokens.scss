@@ -1,0 +1,53 @@
+@use "sass:color";
+
+// ---------------------------------------------------------------------------
+// Palette — a cool porcelain ground with an indigo/violet spectrum, chosen so
+// the glass panels have something with hue to refract. Deliberately not the
+// warm-cream/terracotta of the previous build.
+// ---------------------------------------------------------------------------
+$porcelain:    #F7F8FC;
+$porcelain-2:  #EEF1F8;
+$porcelain-3:  #E3E8F3;
+$ink:          #0E1220;
+$ink-2:        #262C42;
+$slate:        #5A6484;
+$slate-soft:   #8A93AD;
+$hairline:     #D8DFEE;
+
+$indigo:       #4F46E5;
+$violet:       #7C3AED;
+$cyan:         #06B6D4;
+$rose:         #F43F5E;
+$amber:        #F59E0B;
+$emerald:      #10B981;
+
+// Semantic
+$accent:       $indigo;
+$accent-2:     $violet;
+$accent-3:     $cyan;
+
+// Type
+$font-display: "Bricolage Grotesque Variable", "Helvetica Neue", sans-serif;
+$font-body:    "Plus Jakarta Sans Variable", system-ui, -apple-system, sans-serif;
+$font-mono:    "Geist Mono Variable", ui-monospace, monospace;
+
+// Spacing scale
+$space: (
+  1: 0.25rem, 2: 0.5rem,  3: 0.75rem, 4: 1rem,
+  5: 1.5rem,  6: 2rem,    7: 3rem,    8: 4rem,
+  9: 6rem,    10: 8rem,
+);
+
+// Radii
+$r-sm: 10px;
+$r-md: 16px;
+$r-lg: 24px;
+$r-xl: 32px;
+$r-pill: 999px;
+
+// Breakpoints
+$bp: (sm: 480px, md: 768px, lg: 1024px, xl: 1280px, xxl: 1536px);
+
+// Motion
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out:   cubic-bezier(0.65, 0, 0.35, 1);
