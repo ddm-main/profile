@@ -68,7 +68,7 @@ export const AboutSection: React.FC = () => {
   return (
     <section 
       id="about" 
-      className="relative w-screen min-h-screen bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black py-24 lg:py-32 px-6 sm:px-12 lg:px-20 overflow-hidden flex items-center"
+      className="relative w-full min-h-screen bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black py-16 sm:py-24 lg:py-32 px-4 sm:px-12 lg:px-20 overflow-hidden flex items-center"
     >
       {/* ================= BACKGROUND GLOWS & FLOATING PARTICLES ================= */}
       <motion.div 
@@ -90,19 +90,19 @@ export const AboutSection: React.FC = () => {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center space-x-4 mb-10"
+          className="flex items-center space-x-4 mb-6 sm:mb-10"
         >
           <span 
-            className="text-[11px] font-medium tracking-[0.35em] uppercase text-[#D4AF37]"
+            className="text-xs sm:text-[13px] font-semibold tracking-[0.3em] uppercase text-[#D4AF37]"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             01 / ABOUT DEEPAK
           </span>
-          <div className="w-20 h-[1px] bg-gradient-to-r from-[#D4AF37]/80 via-[#8C6D4F]/40 to-transparent" />
+          <div className="w-16 sm:w-20 h-[1.5px] bg-gradient-to-r from-[#D4AF37] via-[#D4AF37]/50 to-transparent" />
         </motion.div>
 
         {/* Main Grid: Content + Portrait */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           
           {/* ================= LEFT CONTENT (7 COLS) ================= */}
           <motion.div
@@ -112,44 +112,44 @@ export const AboutSection: React.FC = () => {
             viewport={{ once: true, margin: "-100px" }}
             className="lg:col-span-7 flex flex-col justify-center"
           >
-            {/* Cinematic Headline with Glow Flare */}
-            <motion.div variants={fadeUpVariants} className="relative mb-6 select-none">
+            {/* Cinematic Headline with High-Contrast Luminous Gradients */}
+            <motion.div variants={fadeUpVariants} className="relative mb-5 sm:mb-6 select-none">
               <h2
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.4rem] tracking-tight uppercase leading-[0.88]"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.4rem] tracking-tight uppercase leading-[0.9] sm:leading-[0.88]"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#D5CBC0] to-[#605448] drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                   9+ YEARS DRIVING
                 </span>
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#F7E7C4] via-[#C99E5D] to-[#543B1A] drop-shadow-[0_8px_25px_rgba(201,158,93,0.3)]">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
                   GLOBAL IT OPERATIONS.
                 </span>
               </h2>
             </motion.div>
 
-            {/* Concise Bio Paragraph */}
+            {/* Concise Bio Paragraph with Comfortable Font Sizing & High Contrast */}
             <motion.p
               variants={fadeUpVariants}
-              className="text-xs sm:text-sm md:text-[14.5px] font-light text-[#B3A497] leading-[1.85] tracking-wide mb-10 max-w-xl"
+              className="text-[14px] sm:text-base md:text-[16px] font-normal text-[#E8DCD0] leading-[1.8] sm:leading-[1.85] tracking-wide mb-8 sm:mb-10 max-w-xl"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              I&apos;m <span className="text-[#F3DBB3] font-medium">Deepak Dongare</span>, an IT Manager based in Pune, India, with over 9 years of progressive experience orchestrating enterprise cloud environments, identity security, network engineering, and hybrid infrastructure. Currently spearheading end-to-end IT operations at RealThingks GmbH, I direct Microsoft Entra ID IAM governance, Zero Trust architecture, TISAX readiness, and AI-enabled automation workflows to deliver bulletproof operational resilience.
+              I&apos;m <span className="text-[#FFF5DC] font-semibold">Deepak Dongare</span>, an IT Manager based in Pune, India, with over 9 years of progressive experience orchestrating enterprise cloud environments, identity security, network engineering, and hybrid infrastructure. Currently spearheading end-to-end IT operations at RealThingks GmbH, I direct Microsoft Entra ID IAM governance, Zero Trust architecture, TISAX readiness, and AI-enabled automation workflows to deliver bulletproof operational resilience.
             </motion.p>
 
             {/* Concise 4-Item Achievement Metrics Grid */}
             <motion.div 
               variants={fadeUpVariants}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 pb-2 border-t border-[#8C6D4F]/25"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-5 sm:pt-6 pb-2 border-t border-[#8C6D4F]/40"
             >
               {/* Stat 1 */}
               <div className="flex flex-col">
                 <span 
-                  className="text-3xl sm:text-4xl font-light text-[#F4EBE2] tracking-tight"
+                  className="text-3xl sm:text-5xl font-normal text-[#FFFFFF] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   9+
                 </span>
-                <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#A8988B] mt-0.5">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
                   Years Leadership
                 </span>
               </div>
@@ -157,12 +157,12 @@ export const AboutSection: React.FC = () => {
               {/* Stat 2 */}
               <div className="flex flex-col">
                 <span 
-                  className="text-3xl sm:text-4xl font-light text-[#D4AF37] tracking-tight"
+                  className="text-3xl sm:text-5xl font-normal text-[#F5D59A] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   100%
                 </span>
-                <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#A8988B] mt-0.5">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
                   Zero Trust &amp; IAM
                 </span>
               </div>
@@ -170,12 +170,12 @@ export const AboutSection: React.FC = () => {
               {/* Stat 3 */}
               <div className="flex flex-col">
                 <span 
-                  className="text-3xl sm:text-4xl font-light text-[#F4EBE2] tracking-tight"
+                  className="text-3xl sm:text-5xl font-normal text-[#FFFFFF] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   TISAX
                 </span>
-                <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#A8988B] mt-0.5">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
                   Security Readiness
                 </span>
               </div>
@@ -183,12 +183,12 @@ export const AboutSection: React.FC = () => {
               {/* Stat 4 */}
               <div className="flex flex-col">
                 <span 
-                  className="text-3xl sm:text-4xl font-light text-[#D4AF37] tracking-tight"
+                  className="text-3xl sm:text-5xl font-normal text-[#F5D59A] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   B.E.
                 </span>
-                <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#A8988B] mt-0.5">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
                   SPPU First Class
                 </span>
               </div>

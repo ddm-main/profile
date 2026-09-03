@@ -127,7 +127,7 @@ export const SkillsSection: React.FC = () => {
   return (
     <section
       id="skills"
-      className="relative w-screen bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black pt-8 pb-24 px-6 sm:px-12 lg:px-20 overflow-hidden flex flex-col justify-center"
+      className="relative w-full bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black pt-6 sm:pt-8 pb-16 sm:pb-24 px-4 sm:px-12 lg:px-20 overflow-hidden flex flex-col justify-center"
     >
       {/* Ambient Glows */}
       <div className="absolute top-1/3 left-1/4 w-[34rem] h-[34rem] bg-[#D4AF37]/5 rounded-full blur-[170px] pointer-events-none" />
@@ -141,15 +141,15 @@ export const SkillsSection: React.FC = () => {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="flex items-center space-x-4 mb-7"
+          className="flex items-center space-x-4 mb-5 sm:mb-7"
         >
           <span
-            className="text-[11px] font-medium tracking-[0.35em] uppercase text-[#D4AF37]"
+            className="text-xs sm:text-[13px] font-semibold tracking-[0.3em] uppercase text-[#D4AF37]"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             03 / TECH MATRIX
           </span>
-          <div className="w-20 h-[1px] bg-gradient-to-r from-[#D4AF37]/80 via-[#8C6D4F]/40 to-transparent" />
+          <div className="w-16 sm:w-20 h-[1.5px] bg-gradient-to-r from-[#D4AF37] via-[#D4AF37]/50 to-transparent" />
         </motion.div>
 
         {/* Section Header */}
@@ -158,16 +158,16 @@ export const SkillsSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10"
+          className="mb-8 sm:mb-10"
         >
           <h2
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight uppercase leading-[0.85] select-none"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight uppercase leading-[0.9] sm:leading-[0.85] select-none"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
           >
-            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#D5CBC0] to-[#605448] drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
               5 CORE PILLARS.
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#F7E7C4] via-[#C99E5D] to-[#543B1A] drop-shadow-[0_8px_25px_rgba(201,158,93,0.35)]">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
               TECHNICAL MASTERY.
             </span>
           </h2>
@@ -179,7 +179,7 @@ export const SkillsSection: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="grid grid-cols-1 lg:grid-cols-12 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6"
         >
           {bentoCategories.map((block, idx) => (
             <motion.div
@@ -188,28 +188,28 @@ export const SkillsSection: React.FC = () => {
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
               whileHover={{ y: -5, transition: { duration: 0.25 } }}
-              className={`${block.colSpan} relative p-8 sm:p-9 rounded-sm border border-[#8C6D4F]/35 bg-[#100D0B]/85 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-[#D4AF37]/80 hover:shadow-[0_16px_45px_rgba(212,175,55,0.14)] cursor-pointer group`}
+              className={`${block.colSpan} relative p-5 sm:p-7 lg:p-9 rounded-sm border border-[#8C6D4F]/40 bg-[#100D0B]/90 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-[#D4AF37] hover:shadow-[0_16px_45px_rgba(212,175,55,0.18)] cursor-pointer group`}
             >
               {/* Top Subtle Border Highlight */}
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
               {/* Corner Minimal Pins */}
-              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#D4AF37]/40 group-hover:border-[#D4AF37] transition-colors duration-300" />
-              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[#D4AF37]/40 group-hover:border-[#D4AF37] transition-colors duration-300" />
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#D4AF37]/50 group-hover:border-[#D4AF37] transition-colors duration-300" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[#D4AF37]/50 group-hover:border-[#D4AF37] transition-colors duration-300" />
 
               {/* Card Meta Header */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#D4AF37] group-hover:text-[#F3DBB3] transition-colors">
+                <span className="text-xs sm:text-[12.5px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] group-hover:text-[#FFF5DC] transition-colors">
                   {block.badge}
                 </span>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 border border-[#8C6D4F]/40 text-[#C4B5A5] bg-[#17130F] group-hover:border-[#D4AF37]/50 group-hover:text-white transition-all">
+                <span className="text-xs sm:text-[12.5px] font-mono font-semibold px-3 py-1 border border-[#8C6D4F]/50 text-[#FFFFFF] bg-[#1C1712] group-hover:border-[#D4AF37] transition-all">
                   {block.stat}
                 </span>
               </div>
 
               {/* Title */}
               <h3
-                className="text-3xl sm:text-4xl font-normal tracking-wide text-white mb-3 group-hover:text-[#F7E7C4] transition-colors"
+                className="text-3xl sm:text-[2.5rem] font-medium tracking-wide text-white mb-3 group-hover:text-[#FFF5DC] transition-colors leading-none"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               >
                 {block.title}
@@ -217,18 +217,18 @@ export const SkillsSection: React.FC = () => {
 
               {/* Description */}
               <p
-                className="text-xs sm:text-sm text-[#A8988B] font-light leading-relaxed mb-7 max-w-xl group-hover:text-[#D5CBC0] transition-colors"
+                className="text-sm sm:text-[15px] text-[#E0D4C8] font-normal leading-relaxed mb-6 max-w-xl group-hover:text-[#FFFFFF] transition-colors"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 {block.description}
               </p>
 
               {/* Interactive Tag Chips */}
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-[#8C6D4F]/20">
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-[#8C6D4F]/30">
                 {block.items.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3.5 py-1.5 text-[10.5px] font-medium tracking-[0.16em] uppercase rounded-sm border border-[#8C6D4F]/35 bg-[#171310] text-[#E8D7C5] group-hover:border-[#D4AF37]/50 group-hover:bg-[#1F1914] group-hover:text-white transition-all duration-300"
+                    className="px-3 py-1.5 text-xs sm:text-[13px] font-medium tracking-[0.12em] uppercase rounded-sm border border-[#8C6D4F]/50 bg-[#1A1511] text-[#F5EDE4] group-hover:border-[#D4AF37] group-hover:bg-[#251D16] group-hover:text-white transition-all duration-300"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     {tech}

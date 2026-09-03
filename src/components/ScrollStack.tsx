@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useCallback } from 'react';
+import React, { useLayoutEffect, useRef, useCallback, useState, useEffect } from 'react';
 import Lenis from 'lenis';
 import './ScrollStack.css';
 
@@ -194,13 +194,32 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     updateCardTransforms();
   }, [updateCardTransforms]);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const setupLenis = useCallback(() => {
+    if (typeof window === 'undefined') return null;
+    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (isTouch || window.innerWidth < 1024) return null;
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       wheelMultiplier: 1,
-      touchMultiplier: 2,
+      touchMultiplier: 0,
       infinite: false,
     });
 
@@ -222,6 +241,17 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     ) as HTMLElement[];
 
     cardsRef.current = cards;
+
+    if (isMobile) {
+      cards.forEach((card, i) => {
+        card.style.transform = 'none';
+        card.style.filter = 'none';
+        card.style.zIndex = 'auto';
+        card.style.marginBottom = i < cards.length - 1 ? '20px' : '0px';
+        card.style.willChange = 'auto';
+      });
+      return;
+    }
 
     // Record static natural top positions before any transforms are applied
     initialTopsRef.current = cards.map((card) => {
@@ -258,6 +288,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       isUpdatingRef.current = false;
     };
   }, [
+    isMobile,
     itemDistance,
     itemScale,
     itemStackDistance,

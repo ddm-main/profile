@@ -7,20 +7,32 @@
 .scroll-stack-inner {
   position: relative;
   width: 100%;
-  padding-top: 4vh;
-  padding-bottom: 50vh; /* creates the runway so all cards stack and lock at the top */
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .scroll-stack-inner {
+    padding-top: 4vh;
+    padding-bottom: 40vh; /* runway for desktop card stacking */
+  }
 }
 
 .scroll-stack-card {
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  transform-origin: top center;
-  will-change: transform, filter;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+}
+
+@media (min-width: 1024px) {
+  .scroll-stack-card {
+    transform-origin: top center;
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
 }
 
 .scroll-stack-end {
