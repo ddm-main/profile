@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
@@ -122,8 +122,6 @@ const cardVariants: Variants = {
 };
 
 export const SkillsSection: React.FC = () => {
-  const [, setHoveredIdx] = useState<number | null>(null);
-
   return (
     <section
       id="skills"
@@ -181,12 +179,10 @@ export const SkillsSection: React.FC = () => {
           viewport={{ once: true, margin: '-60px' }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6"
         >
-          {bentoCategories.map((block, idx) => (
+          {bentoCategories.map((block) => (
             <motion.div
               key={block.title}
               variants={cardVariants}
-              onMouseEnter={() => setHoveredIdx(idx)}
-              onMouseLeave={() => setHoveredIdx(null)}
               whileHover={{ y: -5, transition: { duration: 0.25 } }}
               className={`${block.colSpan} relative p-5 sm:p-7 lg:p-9 rounded-sm border border-[#8C6D4F]/40 bg-[#100D0B]/90 backdrop-blur-xl overflow-hidden transition-all duration-500 hover:border-[#D4AF37] hover:shadow-[0_16px_45px_rgba(212,175,55,0.18)] cursor-pointer group`}
             >

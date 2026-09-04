@@ -68,7 +68,7 @@ export const AboutSection: React.FC = () => {
   return (
     <section 
       id="about" 
-      className="relative w-full min-h-screen bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black py-16 sm:py-24 lg:py-32 px-4 sm:px-12 lg:px-20 overflow-hidden flex items-center"
+      className="relative w-full min-h-[100svh] bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black py-16 sm:py-24 lg:py-32 px-4 sm:px-12 lg:px-20 overflow-hidden flex items-center"
     >
       {/* ================= BACKGROUND GLOWS & FLOATING PARTICLES ================= */}
       <motion.div 
@@ -262,7 +262,11 @@ export const AboutSection: React.FC = () => {
                 {/* Main Portrait */}
                 <img
                   src="/deepak-portrait.webp"
-                  alt="Deepak Dongare - IT Manager"
+                  alt="Portrait of Deepak Dongare, IT Manager"
+                  width={390}
+                  height={488}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover object-top filter brightness-[0.94] contrast-[1.06] saturate-[1.02] group-hover:brightness-105 group-hover:contrast-[1.12] transition-all duration-700 ease-out"
                 />
 

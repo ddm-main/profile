@@ -110,7 +110,7 @@ export const ProjectsSection: React.FC = () => {
   return (
     <section
       id="work"
-      className="relative w-full overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black pt-16 sm:pt-20 pb-20 sm:pb-32 px-4 sm:px-12 lg:px-20"
+      className="relative w-full overflow-x-clip bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black pt-14 sm:pt-16 pb-10 sm:pb-16 px-4 sm:px-12 lg:px-20"
     >
       {/* Studio Ambient Glows */}
       <div className="absolute top-1/4 left-1/3 w-[36rem] h-[36rem] bg-[#D4AF37]/5 rounded-full blur-[180px] pointer-events-none" />
@@ -141,7 +141,7 @@ export const ProjectsSection: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-16"
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10"
         >
           <h2
             className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight uppercase leading-[0.88] select-none"
