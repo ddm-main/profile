@@ -90,9 +90,9 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const stackPositionPx = parsePercentage(stackPosition, containerHeight);
     const scaleEndPositionPx = parsePercentage(scaleEndPosition, containerHeight);
 
-    const endElement = useWindowScroll
-      ? (document.querySelector('.scroll-stack-end') as HTMLElement)
-      : (scrollerRef.current?.querySelector('.scroll-stack-end') as HTMLElement);
+    const endElement = scrollerRef.current?.querySelector(
+      '.scroll-stack-end'
+    ) as HTMLElement | null;
 
     const endElementTop = endElement
       ? endElement.getBoundingClientRect().top + window.scrollY
@@ -201,6 +201,18 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     return false;
   });
 
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -211,6 +223,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
   const setupLenis = useCallback(() => {
     if (typeof window === 'undefined') return null;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
     const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     if (isTouch || window.innerWidth < 1024) return null;
 
@@ -236,13 +249,18 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   }, [handleScroll]);
 
   useLayoutEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const inner = scroller.querySelector('.scroll-stack-inner') as HTMLElement | null;
     const cards = Array.from(
-      document.querySelectorAll('.scroll-stack-card')
+      scroller.querySelectorAll('.scroll-stack-card')
     ) as HTMLElement[];
 
     cardsRef.current = cards;
 
-    if (isMobile) {
+    if (isMobile || prefersReducedMotion) {
+      if (inner) inner.style.paddingBottom = '0px';
       cards.forEach((card, i) => {
         card.style.transform = 'none';
         card.style.filter = 'none';
@@ -271,6 +289,16 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       card.style.perspective = '1000px';
     });
 
+    // Runway derived from the measured last card instead of a fixed 40vh,
+    // so the section never grows a screen-and-a-half of empty space.
+    if (inner) {
+      const lastCard = cards[cards.length - 1];
+      const runway = lastCard
+        ? Math.round(lastCard.getBoundingClientRect().height * 0.5 + itemStackDistance * cards.length)
+        : 0;
+      inner.style.paddingBottom = `${runway}px`;
+    }
+
     setupLenis();
     updateCardTransforms();
 
@@ -289,6 +317,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     };
   }, [
     isMobile,
+    prefersReducedMotion,
     itemDistance,
     itemScale,
     itemStackDistance,
