@@ -7,15 +7,6 @@
 .scroll-stack-inner {
   position: relative;
   width: 100%;
-  padding-top: 1rem;
-  padding-bottom: 2rem;
-}
-
-@media (min-width: 1024px) {
-  .scroll-stack-inner {
-    padding-top: 4vh;
-    padding-bottom: 40vh; /* runway for desktop card stacking */
-  }
 }
 
 .scroll-stack-card {

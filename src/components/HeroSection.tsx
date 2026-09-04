@@ -42,12 +42,14 @@ export const HeroSection: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasLeftHeroRef = useRef(false);
+  const [isInHero, setIsInHero] = useState(true);
+  const [videoFailed, setVideoFailed] = useState(false);
 
   // Play video on mount (initial page load / refresh)
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
+      videoRef.current.play().catch(() => setVideoFailed(true));
     }
   }, []);
 
@@ -73,6 +75,7 @@ export const HeroSection: React.FC = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          setIsInHero(entry.isIntersecting);
           if (!entry.isIntersecting) {
             // User scrolled away / left the hero section
             hasLeftHeroRef.current = true;
@@ -115,10 +118,11 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default lg:cursor-none"
+      id="hero"
+      className="relative w-full min-h-[100svh] overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default lg:cursor-none"
     >
       {/* ================= 1. MINIMAL CUSTOM CURSOR (DESKTOP ONLY) ================= */}
-      {cursorPos.x >= 0 && (
+      {cursorPos.x >= 0 && isInHero && (
         <motion.div
           className="hidden lg:flex fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-[#D4AF37]/40 items-center justify-center backdrop-blur-[1px]"
           animate={{
@@ -143,7 +147,7 @@ export const HeroSection: React.FC = () => {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="relative h-screen w-full sm:w-[90vw] md:w-[75vw] lg:w-[62vw] xl:w-[58vw] 2xl:w-[54vw] flex items-center justify-end overflow-hidden"
+          className="relative h-[100svh] w-full sm:w-[90vw] md:w-[75vw] lg:w-[62vw] xl:w-[58vw] 2xl:w-[54vw] flex items-center justify-end overflow-hidden"
         >
           <video
             ref={videoRef}
@@ -151,12 +155,24 @@ export const HeroSection: React.FC = () => {
             muted
             playsInline
             preload="auto"
+            poster="/deepak-cut.webp"
             onTimeUpdate={handleTimeUpdate}
             onEnded={handleEnded}
+            onError={() => setVideoFailed(true)}
             className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.85] sm:brightness-[0.92] lg:brightness-[1] contrast-[1.04]"
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
           </video>
+
+          {/* Static fallback when the video cannot load or autoplay */}
+          {videoFailed && (
+            <img
+              src="/deepak-cut.webp"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover object-center lg:object-[center_18%]"
+            />
+          )}
 
           {/* Seamless Soft Left Edge Blend */}
           <div className="absolute inset-y-0 left-0 w-2/5 sm:w-1/2 bg-gradient-to-r from-black via-black/85 to-transparent pointer-events-none" />
@@ -193,7 +209,8 @@ export const HeroSection: React.FC = () => {
             >
               <img
                 src={watermarkImg}
-                alt="Insignia"
+                alt=""
+                aria-hidden="true"
                 className="w-24 h-24 lg:w-32 lg:h-32 object-contain drop-shadow-[0_0_15px_rgba(212,175,55,0.25)]"
               />
             </motion.div>
@@ -253,7 +270,7 @@ export const HeroSection: React.FC = () => {
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#EAD8C7] hover:text-[#D4AF37] focus:outline-none z-50 pointer-events-auto"
+              className="md:hidden p-2 text-[#EAD8C7] hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#D4AF37] z-50 pointer-events-auto"
               aria-label="Toggle navigation"
             >
               <div className="w-6 h-4 flex flex-col justify-between items-end">
