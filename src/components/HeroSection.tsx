@@ -27,31 +27,35 @@ const fadeUpVariants: Variants = {
   },
 };
 
-const navItems = [
-  { name: 'ABOUT', href: '#about' },
-  { name: 'PROJECTS', href: '#work' },
-  { name: 'SKILLS', href: '#skills' },
-  { name: 'EXPERIENCE', href: '#experience' },
-  { name: 'CONTACT', href: '#contact' },
-];
-
 export const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasLeftHeroRef = useRef(false);
   const [isInHero, setIsInHero] = useState(true);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
 
-  // Play video on mount (initial page load / refresh)
   useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Play video on mount (initial page load / refresh) — unless the visitor
+  // asked for reduced motion, in which case we never even start the
+  // autoplaying video and show the static poster instead (see render below).
+  useEffect(() => {
+    if (prefersReducedMotion) return;
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => setVideoFailed(true));
     }
-  }, []);
+  }, [prefersReducedMotion]);
 
   // Stop strictly at 9 seconds and hold
   const handleTimeUpdate = () => {
@@ -104,22 +108,14 @@ export const HeroSection: React.FC = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [mobileMenuOpen]);
 
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="relative w-full min-h-[100svh] overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default lg:cursor-none"
+      className={`relative w-full min-h-[100svh] overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default ${
+        isInHero ? 'lg:cursor-none' : ''
+      }`}
     >
       {/* ================= 1. MINIMAL CUSTOM CURSOR (DESKTOP ONLY) ================= */}
       {cursorPos.x >= 0 && isInHero && (
@@ -139,33 +135,30 @@ export const HeroSection: React.FC = () => {
       {/* ================= 2. CINEMATIC VIDEO HERO VISUAL LAYER ================= */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black flex items-center justify-end">
         <motion.div
-          animate={{
-            scale: [1, 1.015, 1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={prefersReducedMotion ? undefined : { scale: [1, 1.015, 1] }}
+          transition={prefersReducedMotion ? undefined : { duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           className="relative h-[100svh] w-full sm:w-[90vw] md:w-[75vw] lg:w-[62vw] xl:w-[58vw] 2xl:w-[54vw] flex items-center justify-end overflow-hidden"
         >
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-            preload="auto"
-            poster="/deepak-cut.webp"
-            onTimeUpdate={handleTimeUpdate}
-            onEnded={handleEnded}
-            onError={() => setVideoFailed(true)}
-            className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.85] sm:brightness-[0.92] lg:brightness-[1] contrast-[1.04]"
-          >
-            <source src="/videos/hero.mp4" type="video/mp4" />
-          </video>
+          {/* Reduced motion: skip the autoplaying 1.9MB video entirely and
+              show the same poster frame as a static image. */}
+          {!prefersReducedMotion && (
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              preload="metadata"
+              poster="/deepak-cut.webp"
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleEnded}
+              onError={() => setVideoFailed(true)}
+              className="h-full w-full object-cover object-center lg:object-[center_18%] brightness-[0.85] sm:brightness-[0.92] lg:brightness-[1] contrast-[1.04]"
+            >
+              <source src="/videos/hero.mp4" type="video/mp4" />
+            </video>
+          )}
 
-          {/* Static fallback when the video cannot load or autoplay */}
-          {videoFailed && (
+          {/* Static fallback when the video cannot load, cannot autoplay, or reduced motion is on */}
+          {(videoFailed || prefersReducedMotion) && (
             <img
               src="/deepak-cut.webp"
               alt=""
@@ -196,15 +189,8 @@ export const HeroSection: React.FC = () => {
             <div className="absolute w-36 h-36 bg-black/85 rounded-full blur-xl" />
 
             <motion.div
-              animate={{
-                y: [-3, 3, -3],
-                scale: [1, 1.03, 1],
-              }}
-              transition={{
-                duration: 4.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              animate={prefersReducedMotion ? undefined : { y: [-3, 3, -3], scale: [1, 1.03, 1] }}
+              transition={prefersReducedMotion ? undefined : { duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
               className="relative flex items-center justify-center"
             >
               <img
@@ -219,115 +205,7 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* ================= 4. CONTENT LAYER ================= */}
-      <div className="relative z-10 flex flex-col justify-between h-full min-h-screen w-full px-4 sm:px-12 lg:px-16 pt-5 sm:pt-6 pb-8 pointer-events-none">
-        
-        {/* Navigation Bar */}
-        <header className="relative flex items-center justify-between w-full pointer-events-auto">
-          <a
-            href="#"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="text-xs sm:text-sm font-semibold tracking-[0.35em] uppercase text-[#EAD8C7] hover:opacity-75 transition-opacity"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-          >
-            DEEPAK.
-          </a>
-
-          {/* Navigation Links (Desktop) */}
-          <nav
-            className="hidden md:flex items-center space-x-8 lg:space-x-10 text-xs sm:text-[13px] tracking-[0.22em] font-medium uppercase text-[#EAE0D5] absolute left-1/2 -translate-x-1/2"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
-          >
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                className="relative group py-1 transition-colors duration-300 hover:text-[#FFFFFF]"
-              >
-                {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#D4AF37] transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </nav>
-
-          {/* Right Action & Mobile Toggle */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3 ml-auto md:ml-0">
-            <a
-              href="#contact"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="group hidden sm:flex items-center space-x-2 text-xs sm:text-[12.5px] tracking-[0.22em] font-semibold uppercase py-2.5 px-4 border border-[#D4AF37]/60 hover:border-[#D4AF37] bg-[#16120E]/90 hover:bg-[#D4AF37] text-white hover:text-black transition-all duration-300 backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.15)]"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              <span>LET&apos;S TALK</span>
-              <span className="transform transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-xs font-bold">
-                ↗
-              </span>
-            </a>
-
-            {/* Mobile Hamburger Toggle */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#EAD8C7] hover:text-[#D4AF37] focus-visible:outline-2 focus-visible:outline-[#D4AF37] z-50 pointer-events-auto"
-              aria-label="Toggle navigation"
-            >
-              <div className="w-6 h-4 flex flex-col justify-between items-end">
-                <span className={`h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'w-6 rotate-45 translate-y-1.5 bg-[#D4AF37]' : 'w-6'}`} />
-                <span className={`h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'w-4'}`} />
-                <span className={`h-0.5 bg-current transition-all duration-300 ${mobileMenuOpen ? 'w-6 -rotate-45 -translate-y-1.5 bg-[#D4AF37]' : 'w-5'}`} />
-              </div>
-            </button>
-          </div>
-        </header>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-[#0A0806]/98 backdrop-blur-3xl flex flex-col justify-between p-6 pt-24 pointer-events-auto md:hidden"
-          >
-            <nav className="flex flex-col space-y-4">
-              {navItems.map((item, idx) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-normal tracking-[0.2em] text-[#EAD8C7] hover:text-[#D4AF37] transition-colors py-2 border-b border-[#8C6D4F]/20 flex items-center justify-between"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                >
-                  <span>{item.name}</span>
-                  <span className="text-[11px] font-mono text-[#8C6D4F]">0{idx + 1}</span>
-                </a>
-              ))}
-            </nav>
-
-            <div className="space-y-3 pt-6 border-t border-[#8C6D4F]/30 pb-4">
-              <a
-                href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3.5 border border-[#D4AF37] bg-[#D4AF37]/10 text-[#F7E7C4] text-xs font-medium tracking-[0.25em] uppercase text-center block"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                LET&apos;S TALK ↗
-              </a>
-              <a
-                href="/resume.pdf"
-                download="Deepak_Dongare_Resume.pdf"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 border border-[#8C6D4F]/40 text-[#A8988B] text-xs font-medium tracking-[0.2em] uppercase text-center block"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                DOWNLOAD RESUME ↓
-              </a>
-            </div>
-          </motion.div>
-        )}
-
+      <div className="relative z-10 flex flex-col justify-between h-full min-h-screen w-full px-4 sm:px-12 lg:px-16 pt-24 sm:pt-28 pb-8 pointer-events-none">
         {/* Main Hero Row */}
         <div className="relative flex flex-col md:flex-row items-center justify-between w-full pt-4 pb-2 my-auto">
           
@@ -343,19 +221,20 @@ export const HeroSection: React.FC = () => {
               <h1
                 className="text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] xl:text-[7.8rem] tracking-tight uppercase leading-[0.88] sm:leading-[0.83]"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                aria-label="Enterprise Cloud & IAM Architect"
               >
                 {/* Line 1: ENTERPRISE */}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                   ENTERPRISE
                 </span>
 
                 {/* Line 2: CLOUD & IAM */}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
+                <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
                   CLOUD &amp; IAM
                 </span>
 
                 {/* Line 3: ARCHITECT */}
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#F7E2BF] via-[#E2BE80] to-[#BE9656] drop-shadow-[0_10px_30px_rgba(190,150,86,0.45)]">
+                <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#F7E2BF] via-[#E2BE80] to-[#BE9656] drop-shadow-[0_10px_30px_rgba(190,150,86,0.45)]">
                   ARCHITECT
                 </span>
               </h1>

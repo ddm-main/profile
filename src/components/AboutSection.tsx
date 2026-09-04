@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
 const containerVariants: Variants = {
@@ -29,6 +29,7 @@ const fadeUpVariants: Variants = {
 export const AboutSection: React.FC = () => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isCardHovered, setIsCardHovered] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   // 1. Motion Values
   const mouseX = useMotionValue(0);
@@ -72,13 +73,13 @@ export const AboutSection: React.FC = () => {
     >
       {/* ================= BACKGROUND GLOWS & FLOATING PARTICLES ================= */}
       <motion.div 
-        animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.16, 0.08] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        animate={prefersReducedMotion ? undefined : { scale: [1, 1.2, 1], opacity: [0.08, 0.16, 0.08] }}
+        transition={prefersReducedMotion ? undefined : { duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute top-1/4 left-1/6 w-[32rem] h-[32rem] bg-[#D4AF37] rounded-full blur-[160px] pointer-events-none"
       />
       <motion.div 
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.05, 0.12, 0.05] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        animate={prefersReducedMotion ? undefined : { scale: [1.2, 1, 1.2], opacity: [0.05, 0.12, 0.05] }}
+        transition={prefersReducedMotion ? undefined : { duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute bottom-1/6 right-1/4 w-[28rem] h-[28rem] bg-[#8C6D4F] rounded-full blur-[170px] pointer-events-none"
       />
 
@@ -117,11 +118,13 @@ export const AboutSection: React.FC = () => {
               <h2
                 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.4rem] tracking-tight uppercase leading-[0.9] sm:leading-[0.88]"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+              
+                aria-label="9+ Years Driving Global IT Operations."
               >
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                   9+ YEARS DRIVING
                 </span>
-                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
+                <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
                   GLOBAL IT OPERATIONS.
                 </span>
               </h2>
@@ -243,8 +246,8 @@ export const AboutSection: React.FC = () => {
               {/* Dynamic Laser Border Pulse on Card Perimeter */}
               <div className="absolute inset-0 rounded-sm pointer-events-none overflow-hidden">
                 <motion.div 
-                  animate={{ x: isCardHovered ? ['-100%', '200%'] : '-100%' }}
-                  transition={{ duration: 1.8, repeat: Infinity, ease: 'linear' }}
+                  animate={!prefersReducedMotion && isCardHovered ? { x: ['-100%', '200%'] } : { x: '-100%' }}
+                  transition={!prefersReducedMotion ? { duration: 1.8, repeat: Infinity, ease: 'linear' } : undefined}
                   className="w-1/2 h-full bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent skew-x-12"
                 />
               </div>

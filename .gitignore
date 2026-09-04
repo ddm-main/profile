@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Env files (this repo previously committed .env — remove it from history
+# separately if the exposed anon key should be rotated)
+.env
+.env.*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

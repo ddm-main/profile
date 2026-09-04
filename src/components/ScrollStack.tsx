@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useCallback, useState, useEffect } from 'react';
-import Lenis from 'lenis';
+import type Lenis from 'lenis';
+import { getLenis, destroyLenis } from '../lib/lenis';
 import './ScrollStack.css';
 
 export interface ScrollStackItemProps {
@@ -23,7 +24,6 @@ export interface ScrollStackProps {
   stackPosition?: string;
   scaleEndPosition?: string;
   baseScale?: number;
-  scaleDuration?: number;
   rotationAmount?: number;
   blurAmount?: number;
   useWindowScroll?: boolean;
@@ -46,7 +46,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 }) => {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const stackCompletedRef = useRef(false);
-  const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
   const initialTopsRef = useRef<number[]>([]);
@@ -183,7 +182,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     baseScale,
     rotationAmount,
     blurAmount,
-    useWindowScroll,
     onStackComplete,
     calculateProgress,
     parsePercentage,
@@ -213,37 +211,34 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
+  // Bumped on any resize (not just when the mobile breakpoint is crossed)
+  // and once webfonts finish loading, so stale pinned-card trigger points
+  // get re-measured instead of staying locked to the first paint's layout.
+  const [layoutVersion, setLayoutVersion] = useState(0);
+
   useEffect(() => {
+    let frame = 0;
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setLayoutVersion((v) => v + 1));
     };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(() => setLayoutVersion((v) => v + 1)).catch(() => {});
+    }
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const setupLenis = useCallback(() => {
-    if (typeof window === 'undefined') return null;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
-    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-    if (isTouch || window.innerWidth < 1024) return null;
-
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 0,
-      infinite: false,
-    });
-
+    const lenis = getLenis();
+    if (!lenis) return null;
     lenis.on('scroll', handleScroll);
-
-    const raf = (time: number) => {
-      lenis.raf(time);
-      animationFrameRef.current = requestAnimationFrame(raf);
-    };
-    animationFrameRef.current = requestAnimationFrame(raf);
-
     lenisRef.current = lenis;
     return lenis;
   }, [handleScroll]);
@@ -252,6 +247,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
+    const lastTransforms = lastTransformsRef.current;
     const inner = scroller.querySelector('.scroll-stack-inner') as HTMLElement | null;
     const cards = Array.from(
       scroller.querySelectorAll('.scroll-stack-card')
@@ -303,21 +299,21 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     updateCardTransforms();
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
       if (lenisRef.current) {
-        lenisRef.current.destroy();
+        lenisRef.current.off('scroll', handleScroll);
+        lenisRef.current = null;
       }
+      destroyLenis();
       stackCompletedRef.current = false;
       cardsRef.current = [];
       initialTopsRef.current = [];
-      lastTransformsRef.current.clear();
+      lastTransforms.clear();
       isUpdatingRef.current = false;
     };
   }, [
     isMobile,
     prefersReducedMotion,
+    layoutVersion,
     itemDistance,
     itemScale,
     itemStackDistance,
@@ -330,6 +326,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     onStackComplete,
     setupLenis,
     updateCardTransforms,
+    handleScroll,
   ]);
 
   return (

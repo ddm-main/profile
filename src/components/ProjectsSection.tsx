@@ -7,7 +7,6 @@ interface Project {
   title: string;
   category: string;
   description: string;
-  githubUrl: string;
   tech: string[];
   metrics: { label: string; value: string }[];
 }
@@ -19,7 +18,6 @@ const projects: Project[] = [
     category: 'IDENTITY SECURITY & GOVERNANCE',
     description:
       'Architected end-to-end enterprise identity governance and Zero Trust security using Microsoft Entra ID. Implemented MFA enforcement, granular Conditional Access policies, Privileged Identity Management (PIM) with just-in-time elevation, automated SCIM lifecycle provisioning, and secure SAML/OIDC SSO.',
-    githubUrl: 'https://linkedin.com/in/deepak-dongare',
     tech: [
       'Microsoft Entra ID',
       'Zero Trust',
@@ -43,7 +41,6 @@ const projects: Project[] = [
     category: 'CYBERSECURITY & COMPLIANCE',
     description:
       'Led comprehensive security gap assessments, control implementation, and evidence preparation for TISAX (Trusted Information Security Assessment Exchange) readiness. Enforced Sophos Firewall hardening, strict network micro-segmentation, endpoint security via Microsoft Intune & Defender, and continuous audit controls.',
-    githubUrl: 'https://linkedin.com/in/deepak-dongare',
     tech: [
       'TISAX Readiness',
       'Sophos Firewall',
@@ -66,7 +63,6 @@ const projects: Project[] = [
     category: 'INTERNAL PLATFORMS & ASSET GOVERNANCE',
     description:
       'Architected and deployed internal enterprise web platforms including a centralized CRM, IT Asset Management (ITAM), and Employee Skill Matrix platform. Eliminated spreadsheet dependencies, unified hardware/software asset lifecycles, and provided real-time operational telemetry for leadership.',
-    githubUrl: 'https://linkedin.com/in/deepak-dongare',
     tech: [
       'Custom CRM',
       'ITAM Platform',
@@ -88,7 +84,6 @@ const projects: Project[] = [
     category: 'AUTOMATION & NEXT-GEN IT OPERATIONS',
     description:
       'Pioneered automation pipelines and AI-assisted operational workflows combining PowerShell, Python, Generative AI, LLMs, and agentic workflows. Streamlined complex incident research, automated user onboarding/offboarding routines, log anomaly detection, and internal knowledge synthesis.',
-    githubUrl: 'https://linkedin.com/in/deepak-dongare',
     tech: [
       'PowerShell',
       'Python',
@@ -146,11 +141,12 @@ export const ProjectsSection: React.FC = () => {
           <h2
             className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight uppercase leading-[0.88] select-none"
             style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+          aria-label="Enterprise Systems. Resilient Architectures."
           >
-            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+            <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
               ENTERPRISE SYSTEMS.
             </span>
-            <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
+            <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
               RESILIENT ARCHITECTURES.
             </span>
           </h2>
@@ -200,8 +196,8 @@ export const ProjectsSection: React.FC = () => {
                   {/* Left Column (7 Cols) */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-                        <span className="text-xs sm:text-sm font-mono font-bold text-[#D4AF37]">
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 mb-3 sm:mb-4">
+                        <span className="shrink-0 text-xs sm:text-sm font-mono font-bold text-[#D4AF37]">
                           {project.number} //
                         </span>
                         <span className="text-xs sm:text-[13px] font-mono font-semibold tracking-[0.2em] uppercase text-[#F3D193]">
@@ -239,7 +235,7 @@ export const ProjectsSection: React.FC = () => {
                   </div>
 
                   {/* Right Column (5 Cols) */}
-                  <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-4 sm:space-y-6 lg:pl-6 lg:border-l lg:border-[#8C6D4F]/30">
+                  <div className="lg:col-span-5 space-y-4 sm:space-y-6 lg:pl-6 lg:border-l lg:border-[#8C6D4F]/30">
                     <div className="space-y-2.5 sm:space-y-3">
                       <span className="text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] block mb-1 sm:mb-2">
                         // ARCHITECTURE METRICS
@@ -258,17 +254,6 @@ export const ProjectsSection: React.FC = () => {
                         </div>
                       ))}
                     </div>
-
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center space-x-3 px-6 py-4 sm:py-3.5 border-2 border-[#D4AF37] bg-[#1A1510] hover:bg-[#D4AF37] text-white hover:text-black text-xs sm:text-[13px] font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
-                    >
-                      <span>VIEW INITIATIVE</span>
-                      <span className="text-sm font-bold">↗</span>
-                    </a>
                   </div>
 
                 </div>

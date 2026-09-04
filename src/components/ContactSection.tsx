@@ -2,17 +2,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+const CONTACT_EMAIL = 'deepak.career@hotmail.com';
+
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
 
+  // No backend is wired up (yet), so "sending" opens the visitor's own mail
+  // client with the message pre-filled — it still reaches the inbox, it
+  // just isn't automatic. Swap this for a real API call if one gets added.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const subject = `Portfolio contact from ${formData.name || 'your site'}`;
+    const body = `${formData.message}\n\n— ${formData.name} (${formData.email})`;
+    const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
     setSent(true);
   };
 
   return (
-    <footer
+    <>
+    <section
       id="contact"
       className="relative w-full bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black pt-12 sm:pt-16 pb-12 sm:pb-16 px-4 sm:px-12 lg:px-20 overflow-hidden"
     >
@@ -52,11 +62,12 @@ export const ContactSection: React.FC = () => {
                 <h2
                   className="text-4xl sm:text-6xl md:text-7xl tracking-tight uppercase leading-[0.9] sm:leading-[0.85] select-none"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                aria-label="Initialize Transmission."
                 >
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                  <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                     INITIALIZE
                   </span>
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
+                  <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
                     TRANSMISSION.
                   </span>
                 </h2>
@@ -153,23 +164,37 @@ export const ContactSection: React.FC = () => {
                   ✓
                 </div>
                 <h3 className="text-2xl sm:text-3xl text-white font-normal uppercase" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                  PACKET DELIVERED
+                  MAIL APP OPENED
                 </h3>
-                <p className="text-sm text-[#E0D4C8] font-normal" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  Transmission registered successfully.
+                <p className="text-sm text-[#E0D4C8] font-normal max-w-sm mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  Your message is pre-filled and ready to send from your own mail app. If nothing opened,{' '}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#D4AF37] underline hover:text-white transition-colors">
+                    email {CONTACT_EMAIL} directly
+                  </a>
+                  .
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setSent(false)}
+                  className="text-xs font-mono uppercase tracking-[0.2em] text-[#A8988B] hover:text-[#D4AF37] transition-colors underline"
+                >
+                  Back to form
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
-                    <span className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
+                    <label htmlFor="contact-name" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
                       // SENDER
-                    </span>
+                    </label>
                     <input
+                      id="contact-name"
+                      name="name"
                       type="text"
                       required
+                      autoComplete="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Enter name"
@@ -179,12 +204,15 @@ export const ContactSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <span className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
+                    <label htmlFor="contact-email" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
                       // CHANNEL
-                    </span>
+                    </label>
                     <input
+                      id="contact-email"
+                      name="email"
                       type="email"
                       required
+                      autoComplete="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="Enter email"
@@ -195,10 +223,12 @@ export const ContactSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
+                  <label htmlFor="contact-message" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
                     // PAYLOAD
-                  </span>
+                  </label>
                   <textarea
+                    id="contact-message"
+                    name="message"
                     required
                     rows={4}
                     value={formData.message}
@@ -223,18 +253,20 @@ export const ContactSection: React.FC = () => {
 
         </div>
 
-        {/* System Footer Line */}
-        <div className="pt-16 mt-16 border-t border-[#8C6D4F]/25 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-4">
-          <span className="text-xs sm:text-[13px] font-mono tracking-wider text-[#D5CBC0] uppercase">
-            PORTFOLIO // DEEPAK DONGARE • IT MANAGER
-          </span>
-          <span className="text-xs sm:text-[13px] font-mono text-[#D5CBC0]">
-            © {new Date().getFullYear()} • ENGINEERED WITH PRECISION
-          </span>
-        </div>
+      </div>
+    </section>
 
+    <footer className="relative w-full bg-black px-4 sm:px-12 lg:px-20 pb-10">
+      <div className="max-w-7xl mx-auto w-full pt-10 border-t border-[#8C6D4F]/25 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-4">
+        <span className="text-xs sm:text-[13px] font-mono tracking-wider text-[#D5CBC0] uppercase">
+          PORTFOLIO // DEEPAK DONGARE • IT MANAGER
+        </span>
+        <span className="text-xs sm:text-[13px] font-mono text-[#D5CBC0]">
+          © {new Date().getFullYear()} • ENGINEERED WITH PRECISION
+        </span>
       </div>
     </footer>
+    </>
   );
 };
 
