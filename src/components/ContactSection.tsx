@@ -62,23 +62,22 @@ export const ContactSection: React.FC = () => {
                 <h2
                   className="text-4xl sm:text-6xl md:text-7xl tracking-tight uppercase leading-[0.9] sm:leading-[0.85] select-none"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                aria-label="Initialize Transmission."
+                aria-label="Let's talk cloud security."
                 >
                   <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
-                    INITIALIZE
+                    LET&apos;S TALK
                   </span>
                   <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
-                    TRANSMISSION.
+                    CLOUD SECURITY.
                   </span>
                 </h2>
               </motion.div>
 
-              <p
-                className="text-sm sm:text-[15px] font-normal text-[#E2D6CA] leading-relaxed max-w-md"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
-                Seeking leadership opportunities in IT Management, Cloud Infrastructure, and Enterprise Zero Trust Security. Direct dispatch and contact channels below.
-              </p>
+              <ul className="grid gap-1.5 text-sm text-[#E2D6CA] sm:text-[15px]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <li>• Azure and cloud security</li>
+                <li>• Identity protection</li>
+                <li>• Cloud security engineering</li>
+              </ul>
 
               {/* Direct Channels Cards */}
               <div className="mt-6 sm:mt-8 space-y-3 max-w-md">
@@ -123,8 +122,8 @@ export const ContactSection: React.FC = () => {
                     <span className="text-sm text-white font-medium">Pune, Maharashtra, India</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-[#D4AF37]">AVAILABILITY:</span>
-                    <span className="text-sm text-[#FFF5DC] font-semibold">90 Days (Early Release Possible)</span>
+                    <span className="text-xs font-mono font-bold text-[#D4AF37]">FOCUS:</span>
+                    <span className="text-sm text-[#FFF5DC] font-semibold">Azure &amp; Cloud Security</span>
                   </div>
                 </div>
 
@@ -159,20 +158,17 @@ export const ContactSection: React.FC = () => {
             <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[#D4AF37]/60" />
 
             {sent ? (
-              <div className="py-12 sm:py-16 text-center space-y-4">
+              <div className="py-12 text-center space-y-4 sm:py-16" aria-live="polite">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#D4AF37] text-[#D4AF37] text-lg font-bold">
                   ✓
                 </div>
                 <h3 className="text-2xl sm:text-3xl text-white font-normal uppercase" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                  MAIL APP OPENED
+                  EMAIL DRAFT READY
                 </h3>
-                <p className="text-sm text-[#E0D4C8] font-normal max-w-sm mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                  Your message is pre-filled and ready to send from your own mail app. If nothing opened,{' '}
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#D4AF37] underline hover:text-white transition-colors">
-                    email {CONTACT_EMAIL} directly
-                  </a>
-                  .
-                </p>
+                <ul className="mx-auto max-w-sm space-y-2 text-left text-sm text-[#E0D4C8]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <li>• Review and send the draft in your mail app.</li>
+                  <li>• Or email <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#D4AF37] underline hover:text-white transition-colors">{CONTACT_EMAIL}</a>.</li>
+                </ul>
                 <button
                   type="button"
                   onClick={() => setSent(false)}
@@ -187,7 +183,7 @@ export const ContactSection: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
                     <label htmlFor="contact-name" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
-                      // SENDER
+                  YOUR NAME
                     </label>
                     <input
                       id="contact-name"
@@ -197,7 +193,7 @@ export const ContactSection: React.FC = () => {
                       autoComplete="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Enter name"
+                      placeholder="Your name"
                       className="w-full bg-[#14100D] border border-[#8C6D4F]/40 focus:border-[#D4AF37] text-base sm:text-sm text-white placeholder-[#A8988B] px-4 py-3 outline-none rounded-sm transition-colors"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     />
@@ -205,7 +201,7 @@ export const ContactSection: React.FC = () => {
 
                   <div>
                     <label htmlFor="contact-email" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
-                      // CHANNEL
+                      YOUR EMAIL
                     </label>
                     <input
                       id="contact-email"
@@ -215,7 +211,7 @@ export const ContactSection: React.FC = () => {
                       autoComplete="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="Enter email"
+                      placeholder="you@example.com"
                       className="w-full bg-[#14100D] border border-[#8C6D4F]/40 focus:border-[#D4AF37] text-base sm:text-sm text-white placeholder-[#A8988B] px-4 py-3 outline-none rounded-sm transition-colors"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     />
@@ -224,7 +220,7 @@ export const ContactSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="contact-message" className="block text-xs sm:text-[13px] font-mono font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-2">
-                    // PAYLOAD
+                    MESSAGE
                   </label>
                   <textarea
                     id="contact-message"
@@ -233,7 +229,7 @@ export const ContactSection: React.FC = () => {
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Enter transmission payload..."
+                    placeholder="How can I help?"
                     className="w-full bg-[#14100D] border border-[#8C6D4F]/40 focus:border-[#D4AF37] text-base sm:text-sm text-white placeholder-[#A8988B] p-4 outline-none rounded-sm transition-colors resize-none"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   />
@@ -244,7 +240,7 @@ export const ContactSection: React.FC = () => {
                   className="w-full py-4 sm:py-3.5 border-2 border-[#D4AF37] bg-[#18130E] hover:bg-[#D4AF37] text-white hover:text-black text-xs sm:text-[13px] font-bold tracking-[0.25em] uppercase transition-all duration-300 shadow-[0_4px_25px_rgba(212,175,55,0.25)]"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
-                  EXECUTE DISPATCH ↗
+                  OPEN EMAIL DRAFT ↗
                 </button>
 
               </form>
@@ -259,7 +255,7 @@ export const ContactSection: React.FC = () => {
     <footer className="relative w-full bg-black px-4 sm:px-12 lg:px-20 pb-10">
       <div className="max-w-7xl mx-auto w-full pt-10 border-t border-[#8C6D4F]/25 flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-4">
         <span className="text-xs sm:text-[13px] font-mono tracking-wider text-[#D5CBC0] uppercase">
-          PORTFOLIO // DEEPAK DONGARE • IT MANAGER
+          PORTFOLIO // DEEPAK DONGARE • CLOUD SECURITY ENGINEER
         </span>
         <span className="text-xs sm:text-[13px] font-mono text-[#D5CBC0]">
           © {new Date().getFullYear()} • ENGINEERED WITH PRECISION

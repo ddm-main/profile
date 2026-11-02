@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import watermarkImg from '../assets/dd-insignia.svg';
+import { scrollToTarget } from '../lib/lenis';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -29,7 +30,9 @@ const fadeUpVariants: Variants = {
 
 export const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const [cursorReady, setCursorReady] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasLeftHeroRef = useRef(false);
@@ -42,8 +45,12 @@ export const HeroSection: React.FC = () => {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const onChange = () => setPrefersReducedMotion(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
+    if (mq.addEventListener) mq.addEventListener('change', onChange);
+    else mq.addListener?.(onChange);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', onChange);
+      else mq.removeListener?.(onChange);
+    };
   }, []);
 
   // Play video on mount (initial page load / refresh) — unless the visitor
@@ -83,10 +90,12 @@ export const HeroSection: React.FC = () => {
           if (!entry.isIntersecting) {
             // User scrolled away / left the hero section
             hasLeftHeroRef.current = true;
+            setCursorReady(false);
+            videoRef.current?.pause();
           } else if (entry.isIntersecting && hasLeftHeroRef.current) {
             // User came back to the hero section after leaving
             hasLeftHeroRef.current = false;
-            if (videoRef.current) {
+            if (videoRef.current && !prefersReducedMotion) {
               videoRef.current.currentTime = 0;
               videoRef.current.play().catch(() => {});
             }
@@ -98,15 +107,17 @@ export const HeroSection: React.FC = () => {
 
     observer.observe(heroEl);
     return () => observer.disconnect();
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      setCursorReady(true);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [cursorX, cursorY]);
 
 
   return (
@@ -114,16 +125,15 @@ export const HeroSection: React.FC = () => {
       ref={sectionRef}
       id="hero"
       className={`relative w-full min-h-[100svh] overflow-hidden bg-black text-[#E8DFD8] font-sans selection:bg-[#cbb59d] selection:text-black cursor-default ${
-        isInHero ? 'lg:cursor-none' : ''
+        isInHero && cursorReady && !prefersReducedMotion ? 'lg:cursor-none' : ''
       }`}
     >
       {/* ================= 1. MINIMAL CUSTOM CURSOR (DESKTOP ONLY) ================= */}
-      {cursorPos.x >= 0 && isInHero && (
+      {cursorReady && isInHero && !prefersReducedMotion && (
         <motion.div
-          className="hidden lg:flex fixed top-0 left-0 pointer-events-none z-50 rounded-full border border-[#D4AF37]/40 items-center justify-center backdrop-blur-[1px]"
+          className="hidden lg:flex fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-50 rounded-full border border-[#D4AF37]/40 items-center justify-center backdrop-blur-[1px]"
+          style={{ x: cursorX, y: cursorY }}
           animate={{
-            x: cursorPos.x - (isHovered ? 24 : 5),
-            y: cursorPos.y - (isHovered ? 24 : 5),
             width: isHovered ? 48 : 10,
             height: isHovered ? 48 : 10,
             backgroundColor: isHovered ? 'rgba(212, 175, 55, 0.1)' : 'rgba(235, 215, 195, 0.95)',
@@ -221,46 +231,46 @@ export const HeroSection: React.FC = () => {
               <h1
                 className="text-5xl sm:text-7xl md:text-8xl lg:text-[7.2rem] xl:text-[7.8rem] tracking-tight uppercase leading-[0.88] sm:leading-[0.83]"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
-                aria-label="Enterprise Cloud & IAM Architect"
+                aria-label="Senior Cloud Security Engineer"
               >
                 {/* Line 1: ENTERPRISE */}
                 <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
-                  ENTERPRISE
+                  CLOUD SECURITY
                 </span>
 
                 {/* Line 2: CLOUD & IAM */}
                 <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
-                  CLOUD &amp; IAM
+                  ENGINEER
                 </span>
 
-                {/* Line 3: ARCHITECT */}
+                {/* Line 3: ROLE SPECIALTIES */}
                 <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#F7E2BF] via-[#E2BE80] to-[#BE9656] drop-shadow-[0_10px_30px_rgba(190,150,86,0.45)]">
-                  ARCHITECT
+                  AZURE &amp; IAM
                 </span>
               </h1>
             </motion.div>
 
             {/* Subtitle Technologies */}
             <motion.div variants={fadeUpVariants} className="mb-3.5 sm:mb-4">
-              <p
-                className="text-xs sm:text-[13px] md:text-sm font-semibold tracking-[0.2em] sm:tracking-[0.24em] uppercase text-[#F3E6D8] leading-relaxed"
+              <ul
+                className="flex flex-wrap gap-x-3 gap-y-1 text-xs sm:text-[13px] md:text-sm font-semibold tracking-[0.14em] uppercase text-[#F3E6D8] leading-relaxed"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                IT MANAGER <span className="text-[#D4AF37] mx-1.5">•</span> ZERO TRUST &amp; IAM <span className="text-[#D4AF37] mx-1.5">•</span> CYBERSECURITY
-              </p>
+                <li>• Azure security</li><li>• Identity and access</li><li>• Cybersecurity</li>
+              </ul>
             </motion.div>
 
-            {/* 3-Line Description */}
+            {/* Short, scan-first profile bullets */}
             <motion.div
               variants={fadeUpVariants}
-              className="text-sm sm:text-[15px] md:text-[16px] font-normal text-[#E8DCD0] leading-[1.8] tracking-wide max-w-xl mb-6 space-y-1"
+              className="mb-6 max-w-xl text-sm font-normal leading-snug tracking-wide text-[#E8DCD0] sm:text-[15px] md:text-base"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              <p>
-                9+ years orchestrating resilient cloud operations, Zero Trust identity architectures, and cybersecurity governance.
-                <br />
-                Transforming complex infrastructure into secure, high-velocity enterprise platforms.
-              </p>
+              <ul className="grid gap-2">
+                <li className="flex gap-2"><span className="text-[#D4AF37]">•</span><span>10 years in IT · 7+ years in Azure</span></li>
+                <li className="flex gap-2"><span className="text-[#D4AF37]">•</span><span>Entra ID · cloud security · endpoint defense</span></li>
+                <li className="flex gap-2"><span className="text-[#D4AF37]">•</span><span>Security automation · TISAX Level 2</span></li>
+              </ul>
             </motion.div>
 
             {/* CTA Buttons */}
@@ -272,6 +282,10 @@ export const HeroSection: React.FC = () => {
               {/* Explore Initiatives CTA */}
               <motion.a
                 href="#work"
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToTarget('work', -72);
+                }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 whileHover={{ scale: 1.02 }}
@@ -288,8 +302,6 @@ export const HeroSection: React.FC = () => {
               <motion.a
                 href="/resume.pdf"
                 download="Deepak_Dongare_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 whileHover={{ scale: 1.02 }}
@@ -303,41 +315,32 @@ export const HeroSection: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT: Floating Quote & Signature Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden xl:flex flex-col items-start pointer-events-auto z-20 select-none mr-2 pr-4"
-          >
-            {/* 1. Quote Mark */}
-            <span className="text-2xl text-[#E5C378] leading-none font-serif mb-2 font-bold">
-              “
-            </span>
-
-            {/* 2. Compact Two-Line Statement */}
-            <div 
-              className="text-xs font-semibold tracking-[0.22em] uppercase text-[#FFFFFF] space-y-1 mb-3"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              <p>ZERO TRUST BY DESIGN.</p>
-              <p>RESILIENCE AT SCALE.</p>
-            </div>
-
-            {/* 3. Gold Accent Line */}
-            <div className="w-32 h-[1.5px] bg-gradient-to-r from-[#D4AF37] via-[#FFF5EB] to-transparent shadow-[0_0_10px_rgba(212,175,55,0.6)] mb-2.5" />
-
-            {/* 4. Fine Monoline Calligraphy Signature */}
-            <div 
-              className="text-[2.6rem] text-[#F5D59A] font-normal leading-none -ml-0.5"
-              style={{ 
-                fontFamily: "'Herr Von Muellerhoff', 'Allura', cursive",
-                letterSpacing: '0.04em',
-              }}
-            >
-              Deepak Dongare
-            </div>
-          </motion.div>
+          <div className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 xl:block" role="group" aria-label="Selected security experience">
+            {[
+              { label: 'IDENTITY', value: '230–240 USERS', target: 'experience', y: 0 },
+              { label: 'ENDPOINTS', value: '260+ DEVICES', target: 'experience', y: 1 },
+              { label: 'ASSURANCE', value: 'TISAX LEVEL 2', target: 'skills', y: 2 },
+            ].map((item, index) => (
+              <motion.a
+                key={item.label}
+                href={`#${item.target}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToTarget(item.target, -72);
+                }}
+                initial={prefersReducedMotion ? false : { opacity: 0, x: 24 }}
+                animate={prefersReducedMotion ? undefined : { opacity: 1, x: [0, 4, 0], y: [0, index % 2 ? 3 : -3, 0] }}
+                transition={prefersReducedMotion ? undefined : { opacity: { delay: 0.6 + index * 0.16, duration: 0.5 }, x: { duration: 6 + index, repeat: Infinity, ease: 'easeInOut' }, y: { duration: 5 + index, repeat: Infinity, ease: 'easeInOut' } }}
+                whileHover={prefersReducedMotion ? undefined : { x: -8, scale: 1.04 }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative mb-3 block w-52 rounded-sm border border-[#D4AF37]/40 bg-[#090807]/85 p-4 shadow-[0_12px_36px_rgba(0,0,0,0.4)] backdrop-blur-md transition-colors hover:border-[#F5D59A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#F5D59A] ${index === 1 ? 'xl:ml-5' : index === 2 ? 'xl:ml-2' : ''}`}
+                aria-label={`${item.label}: ${item.value}. View experience.`}
+              >
+                <span className="block font-mono text-[10px] tracking-[0.22em] text-[#C9A96E]">0{index + 1} / {item.label}</span>
+                <span className="mt-1 block font-display text-xl text-white">{item.value}</span>
+              </motion.a>
+            ))}
+          </div>
         </div>
 
         {/* Bottom Spacer */}

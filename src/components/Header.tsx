@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { scrollToTarget } from '../lib/lenis';
 
 const navItems = [
@@ -17,6 +17,7 @@ const NAV_OFFSET = -72;
 export const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const reduceMotion = useReducedMotion();
   const drawerRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
@@ -82,13 +83,13 @@ export const Header: React.FC = () => {
   const goTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    scrollToTarget(id, NAV_OFFSET);
+    requestAnimationFrame(() => scrollToTarget(id, NAV_OFFSET));
   };
 
   const goToTop = (e: React.MouseEvent) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    scrollToTarget(null);
+    requestAnimationFrame(() => scrollToTarget(null));
   };
 
   return (
@@ -169,10 +170,10 @@ export const Header: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
-            initial={{ opacity: 0, y: -15 }}
+            initial={reduceMotion ? false : { opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: -15 }}
+            transition={{ duration: reduceMotion ? 0 : 0.25 }}
             className="fixed inset-0 z-40 bg-[#0A0806]/98 backdrop-blur-3xl flex flex-col justify-between p-6 pt-24 md:hidden"
           >
             <nav aria-label="Mobile primary" className="flex flex-col space-y-4">

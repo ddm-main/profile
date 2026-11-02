@@ -1,26 +1,26 @@
 import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
+import { RevealText } from './RevealText';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.18,
-      delayChildren: 0.15,
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
     },
   },
 };
 
 const fadeUpVariants: Variants = {
-  hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
     transition: {
-      duration: 1.2,
+      duration: 0.58,
       ease: [0.16, 1, 0.3, 1],
     },
   },
@@ -110,7 +110,7 @@ export const AboutSection: React.FC = () => {
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: false, amount: 0.12, margin: "0px 0px -4% 0px" }}
             className="lg:col-span-7 flex flex-col justify-center"
           >
             {/* Cinematic Headline with High-Contrast Luminous Gradients */}
@@ -119,25 +119,36 @@ export const AboutSection: React.FC = () => {
                 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.4rem] tracking-tight uppercase leading-[0.9] sm:leading-[0.88]"
                 style={{ fontFamily: "'Bebas Neue', sans-serif" }}
               
-                aria-label="9+ Years Driving Global IT Operations."
+                aria-label="10 Years in IT. 7+ Years in Azure Security."
               >
                 <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFFFFF] via-[#F4EFEA] to-[#D8CEC4] drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
-                  9+ YEARS DRIVING
+                  10 YEARS IN IT
                 </span>
                 <span aria-hidden="true" className="block text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DC] via-[#F5D59A] to-[#D4A95D] drop-shadow-[0_8px_25px_rgba(212,169,93,0.4)]">
-                  GLOBAL IT OPERATIONS.
+                  AZURE SECURITY.
                 </span>
               </h2>
             </motion.div>
 
-            {/* Concise Bio Paragraph with Comfortable Font Sizing & High Contrast */}
-            <motion.p
+            <motion.ul
               variants={fadeUpVariants}
-              className="text-[14px] sm:text-base md:text-[16px] font-normal text-[#E8DCD0] leading-[1.8] sm:leading-[1.85] tracking-wide mb-8 sm:mb-10 max-w-xl"
+              className="mb-8 grid max-w-2xl gap-2.5 text-sm leading-snug text-[#E8DCD0] sm:mb-10 sm:grid-cols-2 sm:text-[15px]"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
-              I&apos;m <span className="text-[#FFF5DC] font-semibold">Deepak Dongare</span>, an IT Manager based in Pune, India, with over 9 years of progressive experience orchestrating enterprise cloud environments, identity security, network engineering, and hybrid infrastructure. Currently spearheading end-to-end IT operations at RealThingks GmbH, I direct Microsoft Entra ID IAM governance, Zero Trust architecture, TISAX readiness, and AI-enabled automation workflows to deliver bulletproof operational resilience.
-            </motion.p>
+              {[
+                'Pune, India · Senior Cloud Security Engineer',
+                '10 years in IT · 7+ years in Azure',
+                'Entra ID · cloud and network security · endpoint defense',
+                '230–240 users · 260+ endpoints · 20 shared devices',
+                'TISAX Assessment Level 2 · security governance',
+                'PowerShell and Python security reporting automation',
+              ].map((item) => (
+                <li key={item} className="flex gap-2.5">
+                  <span aria-hidden="true" className="mt-[0.42em] h-1.5 w-1.5 shrink-0 rounded-full bg-[#D4AF37]" />
+                  <RevealText>{item}</RevealText>
+                </li>
+              ))}
+            </motion.ul>
 
             {/* Concise 4-Item Achievement Metrics Grid */}
             <motion.div 
@@ -150,10 +161,10 @@ export const AboutSection: React.FC = () => {
                   className="text-3xl sm:text-5xl font-normal text-[#FFFFFF] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
-                  9+
+                  10
                 </span>
                 <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
-                  Years Leadership
+                  Years in IT
                 </span>
               </div>
 
@@ -163,10 +174,10 @@ export const AboutSection: React.FC = () => {
                   className="text-3xl sm:text-5xl font-normal text-[#F5D59A] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
-                  100%
+                  7+
                 </span>
                 <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
-                  Zero Trust &amp; IAM
+                  Years Azure
                 </span>
               </div>
 
@@ -176,10 +187,10 @@ export const AboutSection: React.FC = () => {
                   className="text-3xl sm:text-5xl font-normal text-[#FFFFFF] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
-                  TISAX
+                  SC-500
                 </span>
                 <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
-                  Security Readiness
+                  Microsoft Certified
                 </span>
               </div>
 
@@ -239,8 +250,8 @@ export const AboutSection: React.FC = () => {
               onMouseLeave={handleMouseLeave}
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: false, amount: 0.18 }}
+              transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
               className="relative p-3.5 border border-[#8C6D4F]/40 rounded-sm bg-[#120F0C]/80 backdrop-blur-xl shadow-[0_25px_70px_rgba(0,0,0,0.95)] cursor-pointer group transition-colors duration-500 hover:border-[#D4AF37]/80"
             >
               {/* Dynamic Laser Border Pulse on Card Perimeter */}
@@ -265,7 +276,7 @@ export const AboutSection: React.FC = () => {
                 {/* Main Portrait */}
                 <img
                   src="/deepak-portrait.webp"
-                  alt="Portrait of Deepak Dongare, IT Manager"
+                  alt="Portrait of Deepak Dongare, Senior Cloud Security Engineer"
                   width={390}
                   height={488}
                   loading="lazy"
