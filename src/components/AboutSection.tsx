@@ -182,17 +182,17 @@ export const AboutSection: React.FC = () => {
               </div>
 
               {/* Stat 3 */}
-              <div className="flex flex-col">
+              <a href="https://learn.microsoft.com/en-us/users/deepakdongare/transcript/d4y0xu19gkjj5l2" target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#D4AF37]">
                 <span 
                   className="text-3xl sm:text-5xl font-normal text-[#FFFFFF] tracking-tight"
                   style={{ fontFamily: "'Bebas Neue', sans-serif" }}
                 >
                   SC-500
                 </span>
-                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1">
+                <span className="text-[11px] sm:text-xs font-semibold tracking-[0.16em] uppercase text-[#F0E6DC] mt-1 transition-colors hover:text-[#F5D59A]">
                   Microsoft Certified
                 </span>
-              </div>
+              </a>
 
               {/* Stat 4 */}
               <div className="flex flex-col">
